@@ -182,7 +182,7 @@ The following has already been setup in this VM:
    You should also see no SQL statement being shown on the application log as well confirming this.
  
    > Note: For this example we are only using an in memory database, but you can image if your database call takes 10-20ms, then returning
-   > the data from teh cache instead of the database, significantly reduces the access time and takes load off the backend database.
+   > the data from the cache instead of the database, significantly reduces the access time and takes load off the backend database.
 
    <<IMAGE SHOWING GETS 1>>
 
@@ -205,7 +205,6 @@ The following has already been setup in this VM:
    If you check VisualVM, you will see that the count of entries in teh cache is now one.
 
    <<IMAGE SHOWING NO ENTRIES IN CACH>>
-
 
 ## Task 4: Add people and verify the Coherence cache
 
@@ -238,7 +237,64 @@ The following has already been setup in this VM:
 3. Check VisualVM and confirm that there are two entries for the people cache.
 
    <<INSERT IMAGE SHOWING THIS IN VISUALVM>>
+  
+## Task 4: The code behind the scenes
 
+What is involved to make this all work? Using Spring Boot, the setup is incredibly simple. 
+We take advantage of Spring Boot’s AutoConfiguration capabilities, and the sensible defaults provided by Coherence Spring.
+
+In order to activate AutoConfiguration for Coherence Spring you need to add the coherence-spring-boot-starter dependency 
+as well as the desired dependency for Coherence.
+
+1. POM Configuration
+
+   We Activate Autoconfiguration by adding the coherence-spring-boot-starter dependency, as well as the desired version of Coherence (CE or Commercial).
+
+   ```xml
+   <dependency>
+     <groupId>com.oracle.coherence.spring</groupId>
+     <artifactId>coherence-spring-boot-starter</artifactId> 
+     <version>4.1.3</version>
+   </dependency>
+   <dependency>
+     <groupId>com.oracle.coherence.ce</groupId>
+     <artifactId>coherence</artifactId>                     
+     <version>24.09</version>
+   </dependency>
+   ```          
+   
+   The above complete pom.xml for the `coehrence-spring-demo-boot` project, can be found on [GitHub](https://github.com/coherence-community/coherence-spring/blob/b285ad6ff3eb80e4d6530f91aae991fb69f6dd65/samples/coherence-spring-demo/coherence-spring-demo-boot/pom.xml#L41).
+
+2. POM configuration for Spring Cache Abstraction
+
+   In this quickstart example we are using Spring’s Caching abstraction and therefore, we use the spring-boot-starter-cache dependency as well:
+    
+   ```xml
+   <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-cache</artifactId>
+   </dependency>
+   ```
+   
+3. Spring Boot App configuration
+
+   For caching, you also must activate caching using the @EnableCaching annotation.
+
+   ```java 
+   @SpringBootApplication
+   @EnableCaching                                             
+   public class CoherenceSpringBootDemoApplication {
+     public static void main(String[] args) {
+         SpringApplication.run(CoherenceSpringBootDemoApplication.class, args);
+     }
+   }
+   ```  
+   
+   The code for the above can be found on [GitHub](https://github.com/coherence-community/coherence-spring/blob/b285ad6ff3eb80e4d6530f91aae991fb69f6dd65/samples/coherence-spring-demo/coherence-spring-demo-boot/src/main/java/com/oracle/coherence/spring/demo/CoherenceSpringBootDemoApplication.java#L1).    
+   
+   Please see the relevant chapter on [Caching](https://docs.spring.io/spring-boot/reference/io/caching.html#io.caching) in the Spring Boot reference guide.
+
+   With `@EnableCaching` in place, Coherence’s autoconfiguration will also provide a `CoherenceCacheManager` bean to the application context.
    
 ## Learn More
             
