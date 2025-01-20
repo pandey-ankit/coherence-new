@@ -37,7 +37,7 @@ This lab assumes you have:
      
 The following has already been setup in this VM:
 
-1. The coherence-spring repository has been cloned from the GitHub repository `https://github.com/coherence-community/coherence-spring.git`.
+1. The coherence-spring repository has been cloned from the GitHub repository `https://github.com/coherence-community/coherence-spring`.
 2. JDK21 and Maven version 3.8.8 has already been installed
 3. The [VisualVM Plugin](https://visualvm.github.io/) and associated [Coherence Plugin](https://github.com/oracle/coherence-visualvm) has already been installed 
 
@@ -127,20 +127,20 @@ The following has already been setup in this VM:
 
       ```java
       @CachePut(cacheNames="events", key="#result.id")
-	  @Override
-	  public Event createAndStoreEvent(String title, Date date) {
+      @Override
+      public Event createAndStoreEvent(String title, Date date) {
          final Event event = new Event();
  		 event.setTitle(title);
 		 event.setDate(date);
 
-		 final Event savedEvent = this.eventRepository.save(event);
-		 return savedEvent;
-	  }
+          final Event savedEvent = this.eventRepository.save(event);
+          return savedEvent;
+      }
      ```  
    
-   The cacheNames attribute of the @CachePut annotation indicates the name of the underlying cache to use. 
+   The cacheNames attribute of the `@CachePut` annotation indicates the name of the underlying cache to use. 
    As caches are basically just a Map (partitioned across many nodes), we also need a key. In this case we 
-   use the expression #result.id to retrieve the primary key of the Event as it was persisted. Thus, 
+   use the expression `#result.id` to retrieve the primary key of the Event as it was persisted. Thus, 
    the saved Event is added to the cache named events and ultimately also returned and printed to the console.
      
    > Note: We will cover the code in more detail further down in this lab.
@@ -152,15 +152,18 @@ The following has already been setup in this VM:
       ./visualvm
       ```   
    
-   Once it starts up, you should see a screen similar to the following: <<INSERT SCREENSHOT of VISUALVM>>
+   Once it starts up, you should see a screen similar to the following: 
 
-   Open `Tools->Options` and click on the `Coherence` tab. Change the `Data Refresh Time` to 7 seconds and click on `OK`.
+      **INSERT SCREENSHOT of VISUALVM**
+
+   Open `Tools->Options` and click on the `Coherence` tab. Confirm the `Data Refresh Time` is 7 seconds and click on `OK`. Setting this value to a lower value that the default of 30 seconds, means the VisualVM plugin 
+   retrieves data more often from the Coherence cluster. In production environments the default of 30 is sufficient as not to place additional load on the cluster. 
 
 3. Double-click the `coherence-spring-demo-boot-4.3.1-SNAPSHOT.jar` process, and select the `Coherence Tab`.  You may need to expand the window to see the full tab.
 
    **IMAGE OF COHERENCE TAB OPENED**
 
-4. Click on `Caches` sub-tab and then select `PartitionedCache / events` and you will see there is one entry and there has been one put which was done automatically via the   
+4. Click on `Caches` sub-tab and then select `PartitionedCache / events` and you will see there is one entry and there has been one put which was done automatically via the Cache Abstraction API.  
 
 5. Retrieve the event using the following:
   
@@ -217,27 +220,86 @@ The following has already been setup in this VM:
 
    You will see output showing `1` and `2` which are the automatically generated ID's.
 
-   Note: The people api only has the `GET /api/people/id` method cached in [DefaultPersonService#getPerson()](https://github.com/coherence-community/coherence-spring/blob/b285ad6ff3eb80e4d6530f91aae991fb69f6dd65/samples/coherence-spring-demo/coherence-spring-demo-core/src/main/java/com/oracle/coherence/spring/demo/service/impl/DefaultPersonService.java#L51) as shown below.
+   > Note: Only the `GET /api/people/id` method is cached (unlike the events API). This can be seen in the code [DefaultPersonService#getPerson()](https://github.com/coherence-community/coherence-spring/blob/b285ad6ff3eb80e4d6530f91aae991fb69f6dd65/samples/coherence-spring-demo/coherence-spring-demo-core/src/main/java/com/oracle/coherence/spring/demo/service/impl/DefaultPersonService.java#L51) as shown below.
    
       ```java
       @Cacheable(cacheNames="people", key="#personId")
-	  @Override
-  	  public Person getPerson(Long personId) {
-         return this.personRepository.findById(personId).get();
-	  }
+      @Override
+      public Person getPerson(Long personId) {
+        return this.personRepository.findById(personId).get();
+      }
       ```
 
 2. Issue the following two curl requests to get both people:
 
       ```bash
-       curl --request DELETE 'http://localhost:8080/api/people/1'
-       curl --request DELETE 'http://localhost:8080/api/people/2'
+      curl --request GET 'http://localhost:8080/api/people/1'
+      curl --request GET 'http://localhost:8080/api/people/2'
       ```   
    
 3. Check VisualVM and confirm that there are two entries for the people cache.
 
    **IMAGE SHOWING THIS IN VISUALVM**
-  
+
+4. In an existing terminal, run the following curl command to add a third person:
+
+      ```bash
+      curl --request POST 'http://localhost:8080/api/people?firstName=James&lastName=Bond&age=66'
+      ```   
+
+   You will see output showing `1` and `2` which are the automatically generated ID's.  
+         
+5. To show how caching will improve application performance, issue the following to time and get third person twice:
+
+      ```bash
+      time curl --request GET 'http://localhost:8080/api/people/3'
+      time curl --request GET 'http://localhost:8080/api/people/3'
+      time curl --request GET 'http://localhost:8080/api/people/3'
+      ```  
+   
+   You will see output similar to the following showing the time to get the subsequent entries are lower as they are already cached:
+
+      ```bash 
+      time curl --request GET 'http://localhost:8080/api/people/3'
+      {
+      "id" : 3,
+      "age" : 66,
+      "firstname" : "James",
+      "lastname" : "Bond",
+      "emailAddresses" : [ ]
+      }
+      real   0m0.016s
+      user   0m0.003s
+      sys    0m0.003s  
+   
+      time curl --request GET 'http://localhost:8080/api/people/3'
+      {
+      "id" : 3,
+      "age" : 66,
+      "firstname" : "James",
+      "lastname" : "Bond",
+      "emailAddresses" : [ ]
+      }
+      real   0m0.013s
+      user   0m0.003s
+      syS    0m0.004s
+   
+      time curl --request GET 'http://localhost:8080/api/people/3'
+      {
+      "id" : 3,
+      "age" : 66,
+      "firstname" : "James",
+      "lastname" : "Bond",
+      "emailAddresses" : [ ]
+      }
+      real   0m0.009s
+      user   0m0.003s
+      sys    0m0.003s
+      ```
+
+   > Note: The time difference is not a lost as we are using in memory database, but as mentioned before
+   > you can image with the database calls taking much longer, in the 10's of milliseconds, the saving of time and offloading could be larger. 
+
 ## Task 4: The code behind the scenes
 
 What is involved to make this all work? Using Spring Boot, the setup is incredibly simple. 
@@ -250,18 +312,18 @@ as well as the desired dependency for Coherence.
 
    We Activate Autoconfiguration by adding the coherence-spring-boot-starter dependency, as well as the desired version of Coherence (CE or Commercial).
 
-   ```xml
-   <dependency>
-     <groupId>com.oracle.coherence.spring</groupId>
-     <artifactId>coherence-spring-boot-starter</artifactId> 
-     <version>4.1.3</version>
-   </dependency>
-   <dependency>
-     <groupId>com.oracle.coherence.ce</groupId>
-     <artifactId>coherence</artifactId>                     
-     <version>24.09</version>
-   </dependency>
-   ```          
+      ```xml
+      <dependency>
+        <groupId>com.oracle.coherence.spring</groupId>
+        <artifactId>coherence-spring-boot-starter</artifactId> 
+        <version>4.1.3</version>
+      </dependency>
+      <dependency>
+        <groupId>com.oracle.coherence.ce</groupId>
+        <artifactId>coherence</artifactId>                     
+        <version>24.09</version>
+      </dependency>
+      ```          
    
    The above complete pom.xml for the `coehrence-spring-demo-boot` project, can be found on [GitHub](https://github.com/coherence-community/coherence-spring/blob/b285ad6ff3eb80e4d6530f91aae991fb69f6dd65/samples/coherence-spring-demo/coherence-spring-demo-boot/pom.xml#L41).
 
@@ -269,26 +331,26 @@ as well as the desired dependency for Coherence.
 
    In this quickstart example we are using Spring’s Caching abstraction and therefore, we use the spring-boot-starter-cache dependency as well:
     
-   ```xml
-   <dependency>
-     <groupId>org.springframework.boot</groupId>
-     <artifactId>spring-boot-starter-cache</artifactId>
-   </dependency>
-   ```
+      ```xml
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-cache</artifactId>
+      </dependency>
+      ```
    
 3. Spring Boot App configuration
 
    For caching, you also must activate caching using the @EnableCaching annotation.
 
-   ```java 
-   @SpringBootApplication
-   @EnableCaching                                             
-   public class CoherenceSpringBootDemoApplication {
-     public static void main(String[] args) {
-         SpringApplication.run(CoherenceSpringBootDemoApplication.class, args);
-     }
-   }
-   ```  
+      ```java 
+      @SpringBootApplication
+      @EnableCaching                                             
+      public class CoherenceSpringBootDemoApplication {
+         public static void main(String[] args) {
+            SpringApplication.run(CoherenceSpringBootDemoApplication.class, args);
+         }
+      }
+      ```  
    
    The code for the above can be found on [GitHub](https://github.com/coherence-community/coherence-spring/blob/b285ad6ff3eb80e4d6530f91aae991fb69f6dd65/samples/coherence-spring-demo/coherence-spring-demo-boot/src/main/java/com/oracle/coherence/spring/demo/CoherenceSpringBootDemoApplication.java#L1).    
    
