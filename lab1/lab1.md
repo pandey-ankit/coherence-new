@@ -158,7 +158,7 @@ The following has already been setup in this VM:
 
 3. Double-click the `coherence-spring-demo-boot-4.3.1-SNAPSHOT.jar` process, and select the `Coherence Tab`.  You may need to expand the window to see the full tab.
 
-   <<IMAGE OF COHERENCE TAB OPENED>>
+   **IMAGE OF COHERENCE TAB OPENED**
 
 4. Click on `Caches` sub-tab and then select `PartitionedCache / events` and you will see there is one entry and there has been one put which was done automatically via the   
 
@@ -184,7 +184,7 @@ The following has already been setup in this VM:
    > Note: For this example we are only using an in memory database, but you can image if your database call takes 10-20ms, then returning
    > the data from the cache instead of the database, significantly reduces the access time and takes load off the backend database.
 
-   <<IMAGE SHOWING GETS 1>>
+   **IMAGE SHOWING GETS OF 1**
 
 6. Delete or evict the event using the following:
   
@@ -192,9 +192,9 @@ The following has already been setup in this VM:
       curl --request DELETE 'http://localhost:8080/api/events/1'
       ```
    
-   If you check VisualVM, you will see that the count of entries in teh cache is now zero.
+   If you check VisualVM, you will see that the count of entries in the cache is now zero.
 
-   <<IMAGE SHOWING NO ENTRIES IN CACH>>
+   **IMAGE SHOWING NO ENTRIES IN CACHE**
 
 7. Retrieve the entry again, and you will see that the number of cache entries is now one, and you can see the SQL to load the event from the DB and then it is placed in the cache.
   
@@ -204,7 +204,7 @@ The following has already been setup in this VM:
    
    If you check VisualVM, you will see that the count of entries in teh cache is now one.
 
-   <<IMAGE SHOWING NO ENTRIES IN CACH>>
+   **IMAGE SHOWING ENTIRES IN CACHE IS ONE**
 
 ## Task 4: Add people and verify the Coherence cache
 
@@ -236,7 +236,7 @@ The following has already been setup in this VM:
    
 3. Check VisualVM and confirm that there are two entries for the people cache.
 
-   <<INSERT IMAGE SHOWING THIS IN VISUALVM>>
+   **IMAGE SHOWING THIS IN VISUALVM**
   
 ## Task 4: The code behind the scenes
 
