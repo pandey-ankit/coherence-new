@@ -297,8 +297,8 @@ The following has already been setup in this VM:
       sys    0m0.003s
       ```
 
-   > Note: The time difference is not a lost as we are using in memory database, but as mentioned before
-   > you can image with the database calls taking much longer, in the 10's of milliseconds, the saving of time and offloading could be larger. 
+   > Note: The time difference is not a great deal as we are using in memory database, but as mentioned before
+   > you can image with the database calls taking much longer, in the 10's of milliseconds, the saving of time and offloading could be significant. 
 
 ## Task 4: The code behind the scenes
 
