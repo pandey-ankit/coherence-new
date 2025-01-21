@@ -51,7 +51,7 @@ The following has already been set up in this VM:
       OS name: "linux", version: "5.15.0-104.119.4.2.el8uek.x86_64", arch: "amd64", family: "unix"
       ```   
 
-2. In the same terminal, issue the following command to start the application:
+2. In the same terminal, issue the following command to build the application:
 
       ```bash
       mvn clean install -DskipTests
@@ -96,16 +96,33 @@ The following has already been set up in this VM:
       ```json 
       {"id":1,"name":"Tim","balance":1234.0}
       ```  
+     
+6. Run the following command to delete a customer.
+
+      ```bash
+      curl -X DELETE http://localhost:8080/api/customers/1
+      ```   
+   
+   You should see output similar to the following showing the deleted customer.
+
+      ```json 
+      {"id":1,"name":"Tim","balance":1234.0}
+      ```  
    
    > Note: You can verify the customers cache  by using VisualVM as we did in the previous lab. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
    
-6. Use `CTRL-C` to quit the Spring Boot application before you move to the next task.
+7Use `CTRL-C` to quit the Spring Boot application before you move to the next task.
+    
+> Note: In this simple example we are running the application as a single storage-enabled member meaning that 
+> the application is serving JAX-RS endpoints as well as storing data. This is fine for a demo application, but 
+> typical applications usually have a separate tier of storage-enabled clients, and the application is storage-disabled
+> and allows for scaling of both the client and coherence cluster tiers.
 
 ## Task 2: Understand the simple application dependencies
 
    In this task, we will cover the dependencies required for the simple application. You can refer to the file `~/spring-workshop/pom.xml` for the full contents.
 
-   1. In the `pom.xml` we define the parent pom to be `spring-boot-starter-parent`, as this will bring in the required spring boot dependencies.
+1. In the `pom.xml` we define the parent pom to be `spring-boot-starter-parent`, as this will bring in the required spring boot dependencies.
 
       ```xml
       <parent>
@@ -116,7 +133,7 @@ The following has already been set up in this VM:
       </parent>
       ```
     
-   2. We then define the name of this project and the `properties` for other dependencies:
+2. We then define the name of this project and the `properties` for other dependencies:
 
       ```xml
       <groupId>com.oracle.coherence.demo.workshops</groupId>
@@ -133,7 +150,7 @@ The following has already been set up in this VM:
       </properties>
       ```
  
-   3. The `spring-boot-starter-web` artifact is included to provide the basic REST and Tomcat app server.
+3. The `spring-boot-starter-web` artifact is included to provide the basic REST and Tomcat app server.
 
       ```xml
       <dependency>
@@ -142,7 +159,7 @@ The following has already been set up in this VM:
       </dependency>
       ```          
       
-   4. Include the Coherence dependencies:
+4. Include the Coherence dependencies:
 
       ```xml
       <dependency>
@@ -164,7 +181,7 @@ The following has already been set up in this VM:
       
       > Note: `coherence-spring-boot-starter` is required for autoconfiguration and Coherence spring boot support, `coherence` are the core components and `coherence-json` is not technically required, but is needed to enable management API over REST.   
 
-   5. Finally, we include the plugin dependencies for `spring-boot-maven-plugin` and the `pof-maven-plugin` that automatically instruments the POJO's with Coherence POF serialization. 
+5. Finally, we include the plugin dependencies for `spring-boot-maven-plugin` and the `pof-maven-plugin` that automatically instruments the POJO's with Coherence POF serialization. 
 
       ```xml
       <build>
@@ -199,9 +216,9 @@ The following has already been set up in this VM:
       
 ## Task 3: Understand the simple application config and code
 
-   In this task, we will cover the application configuration and code.
+In this task, we will cover the application configuration and code.
 
-   1. The file `src/main/resources/application.properties` contains any system properties we want the application to use:
+1. The file `src/main/resources/application.properties` contains any system properties we want the application to use:
 
       ```properties 
       # Common Coherence system properties
@@ -219,7 +236,7 @@ The following has already been set up in this VM:
       2. `coherence.wka=127.0.0.1` restricts the Coherence cluster traffic to the localhost only. The loopback address is just used for demonstration purposes and would not be used in production.
       3. `coherence.management.http=all` this is not mandatory, but if set to `all`, enables Coherence management over REST api
 
-   2. The Customer class (`./src/main/java/com/oracle/coherence/demo/frameworks/springboot/Customer.java) is used to store customer information in the cache. The getter/setter and object methods have been left out for brevity.
+2. The Customer class (`./src/main/java/com/oracle/coherence/demo/frameworks/springboot/Customer.java`) is used to store customer information in the cache. The getter/setter and object methods have been left out for brevity.
 
       ```java 
       @PortableType(id = 1000)
@@ -239,7 +256,7 @@ The following has already been set up in this VM:
       
       > Note: The `@PortableType` annotation indicates that this class should be instrumented by the `pof-maven-plugin` during build to use POF serialization.
 
-   3. Demonstration application and Controller
+3. Demonstration application and Controller
 
       The `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/DemoApplication.java` is a standard Spring Boot application entry point.
 
@@ -286,13 +303,133 @@ The following has already been set up in this VM:
       }
       ```
       
-      Note: The `@CoherenceCache` annotation injects and `NamedCache` with key of `Integer` and value of `Customer. When using basic cache operations they are the same as `Map` operations. For example `values()`, `put()` and `remove()`.
+   Note: The `@CoherenceCache` annotation injects and `NamedCache` with key of `Integer` and value of `Customer. When using basic cache operations they are the same as `Map` operations. For example `values()`, `put()` and `remove()`.
 
-## Task 4: Title for task 3
-       
+## Task 4: Working With Events
 
+In this task we will add Coherence event listeners to respond to cache events.
 
+1. Open the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
    
+      ```java
+      /**
+       * Listener that will be fired upon insertion of a new {@link Customer}.
+       * @param event event
+       */
+      @CoherenceEventListener
+      public void onCustomerInserted(@Inserted @CacheName("customers") MapEvent<Integer, Customer> event) {
+          Logger.info(String.format("Inserted customer key=%d, value=%s", event.getKey(), event.getNewValue()));
+      }
+
+      /**
+       * Listener that will be fired upon deletion of a {@link Customer}.
+       * @param event event
+       */
+      @CoherenceEventListener
+      public void onCustomerDeleted(@Deleted @CacheName("customers") MapEvent<Integer, Customer> event) {
+          Logger.info(String.format("Deleted customer key=%d, old value=%s", event.getOldEntry().getKey(), event.getOldValue()));
+      }
+
+      /**
+       * Listener that will be fired upon update of a {@link Customer}.
+       * @param event event
+       */
+      @CoherenceEventListener
+      public void onCustomerUpdated(@Updated @CacheName("customers") MapEvent<Integer, Customer> event) {
+          Logger.info(String.format("Updated customer key=%d, old value=%s, new value=%s", event.getKey(), event.getOldValue(), event.getNewValue()));
+      }
+      ``` 
+
+      Looking a one of the methods `onCustomerInserted`, this is annotated as `@CoherenceEventListener`, which indicates to 
+      Coherence that this is an event listener. The `@Inserted` annotation indicates this should be run only on insert events and the `@CacheName` specifies the cache that this listener applies to.
+
+      > Note: You will also have to add the following imports:
+      > 1. `import com.oracle.coherence.common.base.Logger;`
+      > 2. `import com.oracle.coherence.spring.annotation.event.CacheName;` 
+      > 3. `import com.oracle.coherence.spring.annotation.event.Deleted;` 
+      > 4. `import com.oracle.coherence.spring.annotation.event.Inserted;` 
+      > 5. `import com.oracle.coherence.spring.annotation.event.Updated;`
+      > 6. `import com.oracle.coherence.spring.event.CoherenceEventListener;`
+      > 7. `import com.tangosol.util.MapEvent;`
+
+2. In a terminal, issue the following command to build the application:
+
+      ```bash
+      mvn clean install -DskipTests
+      ```
+
+3. Then run the following command to start the application:
+
+      ```bash
+      java -jar target/springboot-1.0-SNAPSHOT.jar
+      ```
+             
+4. In a new terminal window, run the following command to insert a customer:
+
+      ```bash
+      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
+      ```      
+   
+      You should see output similar to the following showing the event listener firing:
+
+      ```bash
+      ... Inserted customer key=1, value=Customer{id=1, name='Tim', balance=1000.0}   
+      ```
+
+5. Run the following command, (note the changed balance) to update the customer:
+
+      ```bash
+      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 5000}' http://localhost:8080/api/customers
+      ```      
+   
+      You should see output similar to the following showing the new and old values captured.
+
+      ```bash
+      ... Updated customer key=1, old value=Customer{id=1, name='Tim', balance=1000.0}, 
+      new value=Customer{id=1, name='Tim', balance=5000.0}
+      ```
+    
+6. Run the following to delete the customer:
+
+      ```bash
+      curl -X DELETE http://localhost:8080/api/customers/1
+      ``` 
+   
+      You should see output showing the old value of the deleted customer.
+
+      ```bash
+      ... Deleted customer key=1, old value=Customer{id=1, name='Tim', balance=5000.0}
+      ```
+
+7. Start a second application server, without the http server, using the following command in a new terminal:
+   
+      ```bash
+      java -Dserver.port=-1 -Dloader.main=com.tangosol.net.Coherence -Dcoherence.management.http=none -jar target/springboot-1.0-SNAPSHOT.jar
+      ```   
+   
+      Once the second server starts up you should see the following message on the first server console. This indicates that the cluster has partitioned 
+      the data between the two members for high availability.
+
+      ```bash
+      Partition ownership has stabilized with 2 nodes
+      ```
+
+8. Run the following command, (note the changed balance) to update the customer:
+
+      ```bash
+      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 6000}' http://localhost:8080/api/customers
+      ```      
+   
+      You should see output similar to the following showing the new and old values captured **on both servers**.
+
+      ```bash
+      ... Updated customer key=1, old value=Customer{id=1, name='Tim', balance=1000.0}, 
+      new value=Customer{id=1, name='Tim', balance=5000.0}
+      ```        
+   
+      > Note: The reason for both members receiving the events is that each of the servers has registered for it. This is fine for responding to events,
+      > but in the next lab we cover how we can write interceptors to work with or modify data before, during or after it has been added to the cluster. 
+
 ## Learn More
             
 * [Using Portable Object Format](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-portable-object-format.html)
