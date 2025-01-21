@@ -215,9 +215,9 @@ The following has already been set up in this VM:
   
       The three properties are explained below: 
 
-         1. `coherence.pof.enabled=true` enable serialization using Coherence's Portable Object Format (POF). POF is a language agnostic binary format. POF is efficient in both space and time and is a cornerstone technology in Coherence. See [the documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-portable-object-format.html) for more information.
-         2. `coherence.wka=127.0.0.1` restricts the Coherence cluster traffic to the localhost only. The loopback address is just used for demonstration purposes and would not be used in production.
-         3. `coherence.management.http=all` this is not mandatory, but if set to `all`, enables Coherence management over REST api
+      1. `coherence.pof.enabled=true` enable serialization using Coherence's Portable Object Format (POF). POF is a language agnostic binary format. POF is efficient in both space and time and is a cornerstone technology in Coherence. See [the documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-portable-object-format.html) for more information.
+      2. `coherence.wka=127.0.0.1` restricts the Coherence cluster traffic to the localhost only. The loopback address is just used for demonstration purposes and would not be used in production.
+      3. `coherence.management.http=all` this is not mandatory, but if set to `all`, enables Coherence management over REST api
 
    2. The Customer class (`./src/main/java/com/oracle/coherence/demo/frameworks/springboot/Customer.java) is used to store customer information in the cache. The getter/setter and object methods have been left out for brevity.
 
