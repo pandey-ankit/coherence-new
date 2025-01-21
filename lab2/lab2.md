@@ -105,7 +105,7 @@ The following has already been set up in this VM:
 
    In this task, we will cover the dependencies required for the simple application. You can refer to the file `~/spring-workshop/pom.xml` for the full contents.
 
-   1. In the `pom.xml` we define the parent pom to be `spring-boot-starter-parent`, as this will bring in the required dependencies.
+   1. In the `pom.xml` we define the parent pom to be `spring-boot-starter-parent`, as this will bring in the required spring boot dependencies.
 
       ```xml
       <parent>
@@ -144,28 +144,25 @@ The following has already been set up in this VM:
       
    4. Include the Coherence dependencies:
 
-      ```xml       
-      <!-- required for autoconfiguration and spring boot support -->
+      ```xml
       <dependency>
         <groupId>com.oracle.coherence.spring</groupId>
         <artifactId>coherence-spring-boot-starter</artifactId>
         <version>${coherence-spring.version}</version>
       </dependency>
-          
-      <!-- coherence core components -->
       <dependency>
         <groupId>${coherence.group.id}</groupId>
         <version>${coherence.version}</version>
         <artifactId>coherence</artifactId>
       </dependency>
-      
-      <!-- coherence-json is not technically required, but is needed to enable management API over REST -->
       <dependency>
         <groupId>${coherence.group.id}</groupId>
         <version>${coherence.version}</version>
         <artifactId>coherence-json</artifactId>
       </dependency>
-      ```  
+      ``` 
+      
+      > Note: `coherence-spring-boot-starter` is required for autoconfiguration and Coherence spring boot support, `coherence` are the core components and `coherence-json` is not technically required, but is needed to enable management API over REST.   
 
    5. Finally, we include the plugin dependencies for `spring-boot-maven-plugin` and the `pof-maven-plugin` that automatically instruments the POJO's with Coherence POF serialization. 
 
