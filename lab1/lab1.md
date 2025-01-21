@@ -1,4 +1,5 @@
 # Run the Spring Boot Quick Start Demo
+         
 
 ## Introduction
 
@@ -35,7 +36,7 @@ This lab assumes you have:
   * Lab: Prepare Setup (Free-tier and Paid Tenants only)
   * Lab: Initialize Environment
      
-The following has already been setup in this VM:
+The following has already been set up in this VM:
 
 1. The coherence-spring repository has been cloned from the GitHub repository `https://github.com/coherence-community/coherence-spring`.
 2. JDK21 and Maven version 3.8.8 has already been installed
@@ -323,7 +324,7 @@ as well as the desired dependency for Coherence.
         <artifactId>coherence</artifactId>                     
         <version>24.09</version>
       </dependency>
-      ```          
+      ```   
    
    The above complete pom.xml for the `coehrence-spring-demo-boot` project, can be found on [GitHub](https://github.com/coherence-community/coherence-spring/blob/b285ad6ff3eb80e4d6530f91aae991fb69f6dd65/samples/coherence-spring-demo/coherence-spring-demo-boot/pom.xml#L41).
 
