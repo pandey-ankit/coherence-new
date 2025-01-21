@@ -1,20 +1,18 @@
-# Getting Started with Coherence and Spring
+# **Getting Started with Coherence and Spring**
 
 ## Introduction
 
 This section starts with a simple application configured with Coherence using [Spring Framework](https://spring.io/projects/spring-framework).
 We will extend this application with various Coherence features and explain how they are used.
 
-
-Estimated time: 30 minutes
+Estimated time: 315 minutes
 
 ### Objectives
 
 In this lab, you will:
 
 * Run the simple REST application
-* Add Coherence event listeners
-* Work with Interceptors 
+* Understand the configuration and code
 
 ### Prerequisites
 
@@ -24,11 +22,10 @@ This lab assumes you have:
 * You have completed:
   * Lab: Prepare Setup (Free-tier and Paid Tenants only)
   * Lab: Initialize Environment
-  * Lab: Run the Spring Boot Quick Start Demo
 
 The following has already been set up in this VM:
 
-1. The spring-workshop repository has been cloned from .... into `~/spring-workshop`. We will build upon this workshop in this lab.
+1. The `spring-workshop` repository has been cloned from .... into `~/spring-workshop`. We will build upon this workshop in this lab.
     
 > Note: Make sure you have stopped all Java processes from the previous lab.
 
@@ -304,131 +301,6 @@ In this task, we will cover the application configuration and code.
       ```
       
    Note: The `@CoherenceCache` annotation injects and `NamedCache` with key of `Integer` and value of `Customer. When using basic cache operations they are the same as `Map` operations. For example `values()`, `put()` and `remove()`.
-
-## Task 4: Working With Events
-
-In this task we will add Coherence event listeners to respond to cache events.
-
-1. Open the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
-   
-      ```java
-      /**
-       * Listener that will be fired upon insertion of a new {@link Customer}.
-       * @param event event
-       */
-      @CoherenceEventListener
-      public void onCustomerInserted(@Inserted @CacheName("customers") MapEvent<Integer, Customer> event) {
-          Logger.info(String.format("Inserted customer key=%d, value=%s", event.getKey(), event.getNewValue()));
-      }
-
-      /**
-       * Listener that will be fired upon deletion of a {@link Customer}.
-       * @param event event
-       */
-      @CoherenceEventListener
-      public void onCustomerDeleted(@Deleted @CacheName("customers") MapEvent<Integer, Customer> event) {
-          Logger.info(String.format("Deleted customer key=%d, old value=%s", event.getOldEntry().getKey(), event.getOldValue()));
-      }
-
-      /**
-       * Listener that will be fired upon update of a {@link Customer}.
-       * @param event event
-       */
-      @CoherenceEventListener
-      public void onCustomerUpdated(@Updated @CacheName("customers") MapEvent<Integer, Customer> event) {
-          Logger.info(String.format("Updated customer key=%d, old value=%s, new value=%s", event.getKey(), event.getOldValue(), event.getNewValue()));
-      }
-      ``` 
-
-      Looking a one of the methods `onCustomerInserted`, this is annotated as `@CoherenceEventListener`, which indicates to 
-      Coherence that this is an event listener. The `@Inserted` annotation indicates this should be run only on insert events and the `@CacheName` specifies the cache that this listener applies to.
-
-      > Note: You will also have to add the following imports:
-      > 1. `import com.oracle.coherence.common.base.Logger;`
-      > 2. `import com.oracle.coherence.spring.annotation.event.CacheName;` 
-      > 3. `import com.oracle.coherence.spring.annotation.event.Deleted;` 
-      > 4. `import com.oracle.coherence.spring.annotation.event.Inserted;` 
-      > 5. `import com.oracle.coherence.spring.annotation.event.Updated;`
-      > 6. `import com.oracle.coherence.spring.event.CoherenceEventListener;`
-      > 7. `import com.tangosol.util.MapEvent;`
-
-2. In a terminal, issue the following command to build the application:
-
-      ```bash
-      mvn clean install -DskipTests
-      ```
-
-3. Then run the following command to start the application:
-
-      ```bash
-      java -jar target/springboot-1.0-SNAPSHOT.jar
-      ```
-             
-4. In a new terminal window, run the following command to insert a customer:
-
-      ```bash
-      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
-      ```      
-   
-      You should see output similar to the following showing the event listener firing:
-
-      ```bash
-      ... Inserted customer key=1, value=Customer{id=1, name='Tim', balance=1000.0}   
-      ```
-
-5. Run the following command, (note the changed balance) to update the customer:
-
-      ```bash
-      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 5000}' http://localhost:8080/api/customers
-      ```      
-   
-      You should see output similar to the following showing the new and old values captured.
-
-      ```bash
-      ... Updated customer key=1, old value=Customer{id=1, name='Tim', balance=1000.0}, 
-      new value=Customer{id=1, name='Tim', balance=5000.0}
-      ```
-    
-6. Run the following to delete the customer:
-
-      ```bash
-      curl -X DELETE http://localhost:8080/api/customers/1
-      ``` 
-   
-      You should see output showing the old value of the deleted customer.
-
-      ```bash
-      ... Deleted customer key=1, old value=Customer{id=1, name='Tim', balance=5000.0}
-      ```
-
-7. Start a second application server, without the http server, using the following command in a new terminal:
-   
-      ```bash
-      java -Dserver.port=-1 -Dloader.main=com.tangosol.net.Coherence -Dcoherence.management.http=none -jar target/springboot-1.0-SNAPSHOT.jar
-      ```   
-   
-      Once the second server starts up you should see the following message on the first server console. This indicates that the cluster has partitioned 
-      the data between the two members for high availability.
-
-      ```bash
-      Partition ownership has stabilized with 2 nodes
-      ```
-
-8. Run the following command, (note the changed balance) to update the customer:
-
-      ```bash
-      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 6000}' http://localhost:8080/api/customers
-      ```      
-   
-      You should see output similar to the following showing the new and old values captured **on both servers**.
-
-      ```bash
-      ... Updated customer key=1, old value=Customer{id=1, name='Tim', balance=1000.0}, 
-      new value=Customer{id=1, name='Tim', balance=5000.0}
-      ```        
-   
-      > Note: The reason for both members receiving the events is that each of the servers has registered for it. This is fine for responding to events,
-      > but in the next lab we cover how we can write interceptors to work with or modify data before, during or after it has been added to the cluster. 
 
 ## Learn More
             
