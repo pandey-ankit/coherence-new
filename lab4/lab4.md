@@ -65,7 +65,7 @@ This lab assumes you have:
       </cache-config>
       ```
 
-   > Note: This is just a basic cache configuration for the moment. We will update this in future labs.
+   > Note: This is just a basic cache configuration for the moment. We will update and explain this more in future labs.
 
 ## Task 2: Use the new cache configuration
 
@@ -110,11 +110,14 @@ This lab assumes you have:
       You should see output similar to the following indicating our new cache config has been loaded:
 
       ```bash
-      Loaded cache configuration from "jar:nested:/Users/timmiddleton/Documents/CoherenceEngineering/github/spring-workshop/target/springboot-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/example-cache-config.xml"
+      Loaded cache configuration from "jar:nested:... github/spring-workshop/target/springboot-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/example-cache-config.xml"
       ```
 
 ## Learn More
-            
+   
+* [Coherence Spring Sessions](https://spring.coherence.community/4.1.3/refdocs/reference/html/core.html#coherence-spring-botstrap-with-default-session)
+* [Configure Multiple Sessions](https://spring.coherence.community/4.1.3/refdocs/reference/html/core.html#coherence-spring-botstrap-with-multiple-session)
+* 
 
 
 ## Acknowledgements

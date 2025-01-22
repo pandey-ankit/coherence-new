@@ -2,7 +2,15 @@
 
 ## Introduction
 
-In this lab we extend the basic application to respond to various types of events.
+Event driven patterns are a common way to build scalable applications and microservices. 
+Coherence produces a number of events that can be used by applications to respond to data changes and other actions in Coherence.
+
+There are two main types of events in Coherence:
+
+* [Map Events](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-map-events.html) which are subscribed to using a `MapListener`
+* [Live Events](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-live-events.html) which are subscribed to using an `EventInterceptor`
+
+Spring makes subscribing to both of these event-types, as well as others, much simpler using observer methods annotated with `@CoherenceEventListener`.
 
 Estimated time: 15 minutes
 
@@ -11,7 +19,15 @@ Estimated time: 15 minutes
 In this lab, you will:
        
 * Add Map Events on the customers cache to show when data has been modified
-* Add Entry Events, to modify data as it is being updated
+* Add Entry Event, (Partitioned Cache Events) to modify data as it is being updated          
+
+> Note: there are other events in the Live Events area which we do not cover in this labe, including the following:
+> * Partitioned Cache Lifecycle Events - A set of events that represent the operations for creating a cache, destroying a cache, and clearing all entries from a cache.
+> * Partitioned Service Events - A set of events that represent the operations being performed by a partitioned service. Partitioned service events include both partition transfer events and partition transaction events. Partition transfer events are related to the movement of partitions among cluster members. Partition transaction events are related to changes that may span multiple caches and are performed within the context of a single request.
+> * Lifecycle Events - A set of events that represent the activation and disposal of a ConfigurableCacheFactory instance.
+> * Federation Events -  A set of events that represent the operations being performed by a federation service. Federation events include both federated connection events and federated change events. Federated connection events are related to the interaction of federated participants and federated change events are related to cache updates.
+> 
+> See the `Learn More` section below for documentation links.
 
 ### Prerequisites
      
@@ -22,7 +38,6 @@ This lab assumes you have:
   * Lab: Prepare Setup (Free-tier and Paid Tenants only)
   * Lab: Initialize Environment
   * Lab: Getting Started with Coherence and Spring
-
 
 ## Task 1: Working With Map Events
 
@@ -220,12 +235,13 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
    
    
 
-       
-
 
    
 ## Learn More
-            
+  
+* [Map Events Documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-map-events.html)
+* [Live Events Documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-live-events.html)
+          
 
 
 ## Acknowledgements
