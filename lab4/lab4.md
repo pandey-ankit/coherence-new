@@ -1,9 +1,14 @@
 # Using a Custom Cache Configuration File
 
 ## Introduction
+                     
+Coherence Spring uses the Coherence bootstrap API introduced in Coherence CE 20.12 to configure and create Coherence instances. 
+This means that Coherence resources in a Spring application are typically part of a Coherence Session.
 
-By default, Coherence will load the file `coherence-cache-config.xml` which is located in `coherence.jar`. This can be sufficient for simple applications,
-but usually you require a custom cache configuration file.
+By default, Coherence will start a single Session configured to use the default Coherence configuration file. 
+This behavior can easily be configured using traditional Coherence using system properties or using dedicated configuration.
+The default cache configuration file is `coherence-cache-config.xml` which is located in `coherence.jar`. 
+This can be sufficient for simple applications, but usually you require a custom cache configuration file.
 
 In this lab we will define and use a custom Coherence cache configuration file and configure Coherence to use it.
 
@@ -14,6 +19,7 @@ Estimated time: 10 minutes
 In this lab, you will:
 
 * Create a new cache configuration file
+* Crate a `SessionConfigurationBean` to use the new cache configuration 
 * Ensure that Coherence loads this on startup
 
 ### Prerequisites
