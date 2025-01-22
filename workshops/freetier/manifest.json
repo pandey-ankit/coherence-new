@@ -27,6 +27,16 @@
             "type": "freetier",
             "filename": "../../lab3/lab3.md"
         },
+        {
+            "title": "Lab 4: Using a Custom Cache Configuration File",
+            "type": "freetier",
+            "filename": "../../lab4/lab4.md"
+        },
+        {
+            "title": "Lab 4: Working with Cache Stores",
+            "type": "freetier",
+            "filename": "../../lab5/lab5.md"
+        },
       {
         "title": "Need Help?",
         "description": "Solutions to Common Problems and Directions for Receiving Live Help",

@@ -4,7 +4,6 @@
 
 In this lab we extend the basic application to respond to various types of events.
 
-
 Estimated time: 15 minutes
 
 ### Objectives
@@ -13,7 +12,6 @@ In this lab, you will:
        
 * Add Map Events on the customers cache to show when data has been modified
 * Add Entry Events, to modify data as it is being updated
-
 
 ### Prerequisites
      
