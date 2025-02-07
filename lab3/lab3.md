@@ -30,14 +30,8 @@ In this lab, you will:
 > See the `Learn More` section below for documentation links.
 
 ### Prerequisites
-     
-This lab assumes you have:
 
-* An Oracle Free Tier(Trial), Paid or LiveLabs Cloud Account
-* You have completed:
-  * Lab: Prepare Setup (Free-tier and Paid Tenants only)
-  * Lab: Initialize Environment
-  * Lab: Getting Started with Coherence and Spring
+You should have completed the previous labs.
 
 ## Task 1: Working With Map Events
 
@@ -205,6 +199,7 @@ For example, the onEvent method below will receive entry events for all caches.
 
 ```java
 @CoherenceEventListener
+@Synchronous
 public void onEvent(EntryEvent event) {
     // TODO: process the event
 }
@@ -223,6 +218,7 @@ To restrict the EntryEvent types received by a method apply one or more of the a
   
 ```java
 @CoherenceEventListener
+@Synchronous
 public void onEvent(@Inserted @Removed EntryEvent event) {
     // TODO: process the event
 }
@@ -231,11 +227,65 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
 1. Add an event listener that will ensure that a customers name is always uppercase.
 
    Open the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
+  
+      ```java 
+      /**
+       * Listener that will be fired on storage-enabled node while an entry is being inserted or updated.
+       * The modified value of the {@link Customer} is saved to the cache.
+       * @param event event
+       */
+      @CoherenceEventListener
+      @Synchronous
+      public void uppercaseInterceptor(@Inserting @Updating @CacheName("customers") EntryEvent<Integer, Customer> event) {
+          BinaryEntry<Integer, Customer> entry    = event.getEntry();
+          Customer                       customer = entry.getValue();
+
+          customer.setName(customer.getName().toUpperCase());
+          // the following ensures the value is updated before it's committed to the backing map
+          entry.setValue(customer);
+      }
+      ```  
     
+     > Note: You will also have to add the following imports:
+      > 1. `import com.oracle.coherence.spring.annotation.event.Inserting;`
+      > 2. `import com.oracle.coherence.spring.annotation.event.Synchronous;`
+      > 3. `import com.tangosol.net.events.partition.cache.EntryEvent;`
    
+2. In a terminal, issue the following command to build the application:
+
+      ```bash
+      mvn clean install -DskipTests
+      ```
+
+3. Then run the following command to start the application:
+
+      ```bash
+      java -jar target/springboot-1.0-SNAPSHOT.jar
+      ```
+             
+4. In a new terminal window, run the following command to insert a customer:
+
+      ```bash
+      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
+      ```      
+      
+      You should see output from the original listener showing the inserted value with uppercase name:
+
+      ```bash
+      Inserted customer key=1, value=Customer{id=1, name='TIM', balance=1000.0}
+      ```   
+      
+5. Confirm the data is stored correctly by issuing the following:
+
+      ```bash
+      curl http://localhost:8080/api/customers/1
+      ```   
    
+   You should see output similar to the following indicating that the customer has been retrieved and the name is in fact upeercase.
 
-
+      ```json 
+      {"id":1,"name":"TIM","balance":1000.0}
+      ```  
    
 ## Learn More
   

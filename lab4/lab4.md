@@ -24,14 +24,7 @@ In this lab, you will:
 
 ### Prerequisites
      
-This lab assumes you have:
-
-* An Oracle Free Tier(Trial), Paid or LiveLabs Cloud Account
-* You have completed:
-  * Lab: Prepare Setup (Free-tier and Paid Tenants only)
-  * Lab: Initialize Environment
-  * Lab: Getting Started with Coherence and Spring
-  * Lab: Working With Events
+You should have completed the previous labs.
 
 ## Task 1: Create a cache configuration file
 
@@ -60,6 +53,7 @@ This lab assumes you have:
                 <unit-calculator>BINARY</unit-calculator>
               </local-scheme>
             </backing-map-scheme>
+            <autostart>true</autostart>
           </distributed-scheme>
         </caching-schemes>
       </cache-config>
@@ -110,14 +104,13 @@ This lab assumes you have:
       You should see output similar to the following indicating our new cache config has been loaded:
 
       ```bash
-      Loaded cache configuration from "jar:nested:... github/spring-workshop/target/springboot-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/example-cache-config.xml"
+      Loaded cache configuration from "jar:nested: ... github/spring-workshop/target/springboot-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/example-cache-config.xml"
       ```
 
 ## Learn More
    
 * [Coherence Spring Sessions](https://spring.coherence.community/4.1.3/refdocs/reference/html/core.html#coherence-spring-botstrap-with-default-session)
 * [Configure Multiple Sessions](https://spring.coherence.community/4.1.3/refdocs/reference/html/core.html#coherence-spring-botstrap-with-multiple-session)
-* 
 
 
 ## Acknowledgements

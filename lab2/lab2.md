@@ -16,12 +16,7 @@ In this lab, you will:
 
 ### Prerequisites
 
-This lab assumes you have:
-
-* An Oracle Free Tier(Trial), Paid or LiveLabs Cloud Account
-* You have completed:
-  * Lab: Prepare Setup (Free-tier and Paid Tenants only)
-  * Lab: Initialize Environment
+You should have completed the previous labs.
 
 The following has already been set up in this VM:
 
