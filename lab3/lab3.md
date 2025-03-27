@@ -33,7 +33,7 @@ In this lab, you will:
 
 You should have completed the previous labs.
 
-## Task 1: Working With Map Events
+## Task 1: Adding Map Events
 
 In this task we will add Coherence event listeners to respond to cache `MapEvents`.  
 A `MapEvent` observer method is a method on a Spring bean that is annotated with `@CoherenceEventListener`. 
@@ -190,7 +190,7 @@ for updates and the old value for deletes. You can also filter events based upon
       Note: The reason for both members receiving the events is that each of the servers has registered for it. This is fine for responding to events,
       but in the next lab we cover how we can write interceptors to work with or modify data before, during or after it has been added to the cluster. 
     
-## Task 2: Working With Entry Events
+## Task 2: Adding synchronous Entry Events to mutate data
     
 An EntryEvent is emitted when data is mutated on a cache. These events are only emitted on the storage enabled member 
 that is the primary owner of the entry that is mutated.
@@ -213,6 +213,8 @@ There are a number of different EntryEvent types:
 * Updated - an entry has been updated in a cache, use the @Updated annotation
 * Removing - an entry is being deleted from a cache, use the @Removing annotation
 * Removed - an entry has been deleted from a cache, use the @Removed annotation
+           
+In this section we will create a `Inserting` or `Updating` events to modify data before it it commited to the cache.
 
 To restrict the EntryEvent types received by a method apply one or more of the annotations above to the method parameter. For example, the method below will receive Inserted and Removed events.
   
@@ -223,6 +225,7 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
     // TODO: process the event
 }
 ```
+
 
 1. Add an event listener that will ensure that a customers name is always uppercase.
 
@@ -286,7 +289,24 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
       ```json 
       {"id":1,"name":"TIM","balance":1000.0}
       ```  
-   
+
+## Task 3: Adding Entry Events after data is mutated
+
+In this task, we will add Entry Events, to audit inserts or updates after they have completed. This will show the following event types. 
+
+* Inserted - an entry has been inserted into a cache, use the @Inserted annotation
+* Updated - an entry has been updated in a cache, use the @Updated annotation
+* Removed - an entry has been deleted from a cache, use the @Removed annotation
+
+1. Add a new cache to the file `DemoController.java` by adding this to the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
+  
+      ```java
+      @CoherenceCache
+      private NamedCache<Long, String> customersAudit;
+      ```  
+
+2. Add the following 
+
 ## Learn More
   
 * [Map Events Documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-map-events.html)

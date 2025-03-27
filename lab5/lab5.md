@@ -35,7 +35,7 @@ You should have completed the previous labs.
 
 ## Task 1: Write the JPA Repository CacheStore
 
-1. In the base `pom.xml`, add the following dependency so we can use the `JpaRepository` interface:
+1. In the base `pom.xml`, add the following dependency so you can use the `JpaRepository` interface:
 
       ```xml
       <dependency>

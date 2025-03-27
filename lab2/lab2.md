@@ -103,7 +103,7 @@ The following has already been set up in this VM:
    
    > Note: You can verify the customers cache  by using VisualVM as we did in the previous lab. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
    
-7Use `CTRL-C` to quit the Spring Boot application before you move to the next task.
+7. Use `CTRL-C` to quit the Spring Boot application before you move to the next task.
     
 > Note: In this simple example we are running the application as a single storage-enabled member meaning that 
 > the application is serving JAX-RS endpoints as well as storing data. This is fine for a demo application, but 
@@ -120,7 +120,7 @@ The following has already been set up in this VM:
       <parent>
        <groupId>org.springframework.boot</groupId>
        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.1</version>
+        <version>3.4.2</version>
        <relativePath/>
       </parent>
       ```
@@ -136,7 +136,7 @@ The following has already been set up in this VM:
 
       <properties>
         <java.version>21</java.version>
-        <coherence.version>24.09</coherence.version>
+        <coherence.version>25.03</coherence.version>
         <coherence.group.id>com.oracle.coherence.ce</coherence.group.id>
         <coherence-spring.version>4.3.0</coherence-spring.version>
       </properties>
