@@ -214,7 +214,7 @@ There are a number of different EntryEvent types:
 * Removing - an entry is being deleted from a cache, use the @Removing annotation
 * Removed - an entry has been deleted from a cache, use the @Removed annotation
            
-In this section we will create a `Inserting` or `Updating` events to modify data before it it commited to the cache.
+In this section we will create a `Inserting` or `Updating` events to modify data before it is commited to the cache.
 
 To restrict the EntryEvent types received by a method apply one or more of the annotations above to the method parameter. For example, the method below will receive Inserted and Removed events.
   
@@ -253,6 +253,10 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
       > 1. `import com.oracle.coherence.spring.annotation.event.Inserting;`
       > 2. `import com.oracle.coherence.spring.annotation.event.Synchronous;`
       > 3. `import com.tangosol.net.events.partition.cache.EntryEvent;`
+
+   > Note: It is important that the amount of work you do within a synchronous event listener is minimized as you are holding
+   > an implicit exclusive lock on the entry while this code runs. You should not be doing any operations that do external calls to
+   > other systems as this will affect the performance and throughput of the cluster.
    
 2. In a terminal, issue the following command to build the application:
 
@@ -290,29 +294,10 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
       {"id":1,"name":"TIM","balance":1000.0}
       ```  
 
-## Task 3: Adding Entry Events after data is mutated
-
-In this task, we will add Entry Events, to audit inserts or updates after they have completed. This will show the following event types. 
-
-* Inserted - an entry has been inserted into a cache, use the @Inserted annotation
-* Updated - an entry has been updated in a cache, use the @Updated annotation
-* Removed - an entry has been deleted from a cache, use the @Removed annotation
-
-1. Add a new cache to the file `DemoController.java` by adding this to the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
-  
-      ```java
-      @CoherenceCache
-      private NamedCache<Long, String> customersAudit;
-      ```  
-
-2. Add the following 
-
 ## Learn More
   
 * [Map Events Documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-map-events.html)
 * [Live Events Documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-live-events.html)
-          
-
 
 ## Acknowledgements
 

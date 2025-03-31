@@ -1,23 +1,12 @@
-# Working with Cache Stores
+# Coherence Spring Data
 
 ## Introduction
 
-Coherence Spring provides dedicated support for database-backed caches using JPA. Spring Data’s [JPA Repositories](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.repositories) 
-make basic CRUD database access very simple. An application developer can just provide an interface that extends 
-`JpaRepository` with the required generic parameters and Spring will do the rest.
+The Spring Data Coherence module provides integration with Coherence data grids. Key functional areas of 
+Spring Data Coherence are a POJO centric model for interacting with 
+a Coherence data grid and easily writing a Repository style data access layer.
 
-Coherence caches that are backed by a database have two options for how the database integration is provided:
-
-* [CacheLoader]((https://coherence.community/24.09/api/java/com/tangosol/net/cache/CacheLoader.html)) - an application developer writes an implementation of a CacheLoader to read data from a database for a given key (or keys), convert it to entities that are then loaded into a cache for the given keys.
-* [CacheStore](https://coherence.community/24.09/api/java/com/tangosol/net/cache/CacheStore.html) - whilst a CacheLoader only loads from a database into a cache, a CacheStore (which extends CacheLoader) also stores cached entities back to the database, or for entries deleted from the cache, erases the corresponding values from the database. The parallels between a CacheLoader or CacheStore and a JpaRepository should be pretty obvious.
-
-The Coherence Spring core module provides two interfaces:
-
-* [JpaRepositoryCacheLoader](https://spring.coherence.community/4.1.3/refdocs/api/com/oracle/coherence/spring/cachestore/JpaRepositoryCacheLoader.html), which extends both JpaRepository and CacheLoader
-* [JpaRepositoryCacheStore](https://spring.coherence.community/4.1.3/refdocs/api/com/oracle/coherence/spring/cachestore/JpaRepositoryCacheStore.html), which extends both JpaRepository and CacheStore.
-
-To create a JPA repository cache loader or cache store, all a developer needs to do is extend the relevant interface JpaRepositoryCacheLoader or JpaRepositoryCacheStore with the correct generic parameters. 
-
+We will change the `DemoController` in the last lab to show you how we can achieve similar results using Spring Data. 
 
 Estimated time: 20 minutes
 
@@ -33,15 +22,15 @@ In this lab, you will:
      
 You should have completed the previous labs.
 
-## Task 1: Write the JPA Repository CacheStore
+## Task 1: Create the CustomerRepository
 
-1. In the base `pom.xml`, add the following dependency so you can use the `JpaRepository` interface:
+1. In the base `pom.xml`, add the following dependency so you can use the `CoherenceRepository ` interface:
 
       ```xml
       <dependency>
-         <groupId>org.springframework.data</groupId>
-         <artifactId>spring-data-jpa</artifactId>
-         <scope>provided</scope>
+        <groupId>com.oracle.coherence.spring</groupId>
+        <artifactId>coherence-spring-data</artifactId>
+        <version>${coherence-spring.version}</version>
       </dependency>
       ```
 
@@ -50,107 +39,127 @@ You should have completed the previous labs.
       ```java
       package com.oracle.coherence.demo.frameworks.springboot;
 
-      import org.springframework.data.jpa.repository.JpaRepository;
-      import org.springframework.stereotype.Repository;
+      import com.oracle.coherence.spring.data.config.CoherenceMap;
+      import com.oracle.coherence.spring.data.repository.CoherenceRepository;
 
-      @Repository
-      public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+      @CoherenceMap("customers")
+      public interface CustomerRepository extends CoherenceRepository<Customer, Integer> {
       }
       ```
 
-## Task 2: Add the `CustomerRepository` to the cache configuration
+   > Note: The Coherence NamedMap that will be used by the Repository implementation will be
+   > based on the type name in the Repository class assuming the Repository name follows the format of [Type]Repository (e.g., CustomerRepository will use a NamedMap called customer). If this is not desired, the name may instead be passed by the @CoherenceMap annotation which we are doing in our 
+   > case to use `people`.  
 
-For this example, we use a co-located Coherence instance that will start as part of the application itself. Normally you would have a 
-separate storage-disabled client and storage-enabled tier to allow you to scale each tier separately.
+## Task 3: Configure the Repository
 
-To use a CacheStore in Coherence, it needs to be configured in the Coherence cache configuration file, which in the 
-embedded use-case is coherence-cache-config.xml. In order to use the repository bean as a CacheStore, we will make use 
-of the Coherence Spring feature that allows injection of Spring beans into the cache configuration file.
+As Coherence is, at its core, a key-value store, mapping Entities for use with a Coherence 
+Repository is relatively simple as only the id needs to be annotated. 
+It is possible to use either `org.springframework.data.annotation.Id` or `javax.persistence.Id` to denote the entity’s id.
 
-To use Spring bean injection in the configuration file we need to declare a custom namespace in the root XML 
-element that references the Coherence Spring NamespaceHandler.
+1.  Update the `Customer` class to include the `org.springframework.data.annotation.Id` annotation:
+   
+      ```java
+      public class Customer {
+          @JsonProperty("id")
+          @org.springframework.data.annotation.Id
+          private int id;
+          ...
+      ```
     
-1. Add the spring Namespace handler by changing the `cache-config` element in the file `example-cache-config.xml` we created in `src/main/resources` in the last lab.
-
-      ```xml
-      <cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xmlns="http://xmlns.oracle.com/coherence/coherence-cache-config"
-              xmlns:spring="class://com.oracle.coherence.spring.namespace.NamespaceHandler"
-              xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config coherence-cache-config.xsd">
-      ```
-         
-   The `xmlns:spring="class://com.oracle.coherence.spring.namespace.NamespaceHandler"` line declares the custom namespace, 
-   so elements with a prefix spring will be handled by the com.oracle.coherence.spring.namespace.NamespaceHandler class. The custom namespace handler allows us to use elements of the form 
-   `<spring:bean>bean-name</spring:bean>` anywhere in the configuration that Coherence normally 
-   allows an <instance> element or a <class-scheme> element.
-
-2. Add the cache store to the cache configuration by updating the `distributed-scheme` to be:
-
-      ```xml
-      <caching-schemes>
-        <distributed-scheme>
-          <scheme-name>server</scheme-name>
-          <backing-map-scheme>
-            <read-write-backing-map-scheme>
-            <internal-cache-scheme>
-              <local-scheme>
-                <unit-calculator>BINARY</unit-calculator>
-              </local-scheme>
-            </internal-cache-scheme>
-            <cachestore-scheme>
-              <spring:bean>{repository-bean}</spring:bean>
-            </cachestore-scheme>
-          </read-write-backing-map-scheme>
-        </backing-map-scheme>
-        <autostart>true</autostart>
-      </distributed-scheme>
-      ```    
-   
-   > Note: In the snippet above you can see the `<spring:bean>{repository-bean}</spring:bean>` element used as the cache store. 
-   > In this case we have not used the name of the repository bean directly, we have used a parameter named repository-bean
-   > (XML values in curly-brackets in the `<spring:bean>` element are treated as parameter macros). This allows us to map
-   > multiple caches to the same scheme each with a different cache store - this is quite a common 
-   > approach in Coherence for a number of elements that may be configured in a scheme per-cache. 
-   > We can now also add the cache mapping for our people cache that will use the scheme above.
-
-3. Update the `cache-mapping` to include the `repository-bean` by add the following xml:
-
-      ```xml
-      <cache-mapping>
-        <cache-name>*</cache-name>
-        <scheme-name>server</scheme-name>
-        <init-params>
-          <init-param>
-            <param-name>repository-bean</param-name>
-            <param-value>customerRepository</param-value>
-          </init-param>
-        </init-params>
-      </cache-mapping>
-      ```   
-   
-   > Note: The bean name used here is `customerRepository`. This is the default name generated by Spring for the `CustomerRepository`
-   > class, which is the simple class name with the first letter lowercase. If we did not want to rely on Spring generating a bean name 
-   > we could specify a name in the `@Repository` annotation on the `CustomerRepository` class.
-
-4. Inspect the complete updated cache configuration file:
-
-      ```xml
-      
-      ```
-
-## Task 3: Update the `DemoController` to add the cache store.
-
-1. Add the `CustomerRepository` to `DemoController.java` by adding the following:
+2.  Add the following to the existing `CoherenceConig.java` to enable the repository.
 
       ```java
-      @Autowired
-      private CustomerRepository customerRepository;
+      @Configuration
+      @EnableCoherence
+      @EnableCoherenceRepositories
+      public class CoherenceConfig {
       ```
 
+3.  Update `DemoController.java` to contain only the following, which removes the `@CoherenceCache` annotations as we are only using spring data, but storing in Coherence cache.
+
+      ```java
+      package com.oracle.coherence.demo.frameworks.springboot.controller;
+    
+      import com.oracle.coherence.demo.frameworks.springboot.Customer;
+    
+      import com.oracle.coherence.demo.frameworks.springboot.CustomerRepository;
+    
+      import org.springframework.beans.factory.annotation.Autowired;
+      import org.springframework.http.ResponseEntity;
+    
+      import org.springframework.web.bind.annotation.DeleteMapping;
+      import org.springframework.web.bind.annotation.GetMapping;
+      import org.springframework.web.bind.annotation.PathVariable;
+      import org.springframework.web.bind.annotation.PostMapping;
+      import org.springframework.web.bind.annotation.RequestBody;
+      import org.springframework.web.bind.annotation.RequestMapping;
+      import org.springframework.web.bind.annotation.RestController;
+    
+      import java.util.Collection;
+      import java.util.Optional;
+      import java.util.stream.Collectors;
+      import java.util.stream.StreamSupport;
+    
+      @RestController
+      @RequestMapping(path = "/api/customers")
+      public class DemoController {
+    
+          @Autowired
+          private CustomerRepository customerRepository;
+    
+          @GetMapping
+          public Collection<Customer> getCustomers() {
+              return StreamSupport.stream(customerRepository.findAll().spliterator(), false)
+                      .collect(Collectors.toList());
+          }
+    
+          @PostMapping
+          public ResponseEntity<Void> createCustomer(@RequestBody Customer customer) {
+              customerRepository.save(customer);
+              return ResponseEntity.accepted().build();
+          }
+    
+          @GetMapping("/{id}")
+          public ResponseEntity<Customer> getCustomer(@PathVariable int id) {
+              Optional<Customer> optionalCustomer = customerRepository.findById(id);
+              return optionalCustomer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+          }
+    
+          @DeleteMapping("/{id}")
+          public void removeCustomer(@PathVariable int id) {
+              customerRepository.findById(id).ifPresent(customer -> customerRepository.delete(customer));
+          }
+      }
+      ```
+
+4.  In a terminal, issue the following command to build the application:
+
+      ```bash
+      mvn clean install -DskipTests
+      ```
+
+5.  Then run the following command to start the application:
+
+      ```bash
+      java -jar target/springboot-1.0-SNAPSHOT.jar
+      ```
+6. In a separate terminal window, run the following command to insert a customer:
+
+      ```bash
+      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
+      ```      
+
+   You should see output from the original listener showing the inserted value with uppercase name:
+
+      ```bash
+      Inserted customer key=1, value=Customer{id=1, name='TIM', balance=1000.0}
+      ```   
+
+   > Note: You can verify the customers cache  by using VisualVM as we did in the previous lab. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
 
 
-## Task 4: Title for task 3
-       
+## Task 3: Update the `DemoController` to add the cache store.
 
 
    
