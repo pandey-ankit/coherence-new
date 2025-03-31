@@ -109,9 +109,7 @@ You should have completed the previous labs.
 
 ## Learn More
    
-* [Coherence Spring Sessions](https://spring.coherence.community/4.1.3/refdocs/reference/html/core.html#coherence-spring-botstrap-with-default-session)
-* [Configure Multiple Sessions](https://spring.coherence.community/4.1.3/refdocs/reference/html/core.html#coherence-spring-botstrap-with-multiple-session)
-
+* [Configuring Coherence Caches](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/configuring-caches.html#GUID-2EF76F2B-ABF2-43AC-BF47-A600564465A2)
 
 ## Acknowledgements
 

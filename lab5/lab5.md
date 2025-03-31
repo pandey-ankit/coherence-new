@@ -14,9 +14,9 @@ Estimated time: 20 minutes
 
 In this lab, you will:
      
-* Extend the existing Customer POJO
-* Write a JPA Repository CacheStore
-
+* Include the dependencies for Coherence Spring Data
+* Add a Customer Repository class
+* Update the controller to only use Coherence Spring Data
 
 ### Prerequisites
      
@@ -24,7 +24,7 @@ You should have completed the previous labs.
 
 ## Task 1: Create the CustomerRepository
 
-1. In the base `pom.xml`, add the following dependency so you can use the `CoherenceRepository ` interface:
+1. In the base `pom.xml`, add the following dependency so you can use the `CoherenceRepository ` interfaceinterface:
 
       ```xml
       <dependency>
@@ -148,23 +148,17 @@ It is possible to use either `org.springframework.data.annotation.Id` or `javax.
 
       ```bash
       curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
-      ```      
-
-   You should see output from the original listener showing the inserted value with uppercase name:
-
-      ```bash
-      Inserted customer key=1, value=Customer{id=1, name='TIM', balance=1000.0}
-      ```   
+      ```
 
    > Note: You can verify the customers cache  by using VisualVM as we did in the previous lab. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
 
 
-## Task 3: Update the `DemoController` to add the cache store.
 
-
-   
 ## Learn More
-            
+
+* [Coherence Spring](https://docs.coherence.community/coherence-spring/docs/latest/)    
+* [Coherence Spring Data](https://docs.coherence.community/coherence-spring/docs/latest/refdocs/reference/html/spring-data.html#spring-data)
+
 
 
 ## Acknowledgements

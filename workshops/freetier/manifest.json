@@ -33,9 +33,14 @@
             "filename": "../../lab4/lab4.md"
         },
         {
-            "title": "Lab 4: Working with Cache Stores",
+            "title": "Lab 4: Working with Coherence Spring Data",
             "type": "freetier",
             "filename": "../../lab5/lab5.md"
+        },
+        {
+            "title": "Lab 5: Using Spring Session",
+            "type": "freetier",
+            "filename": "../../lab6/lab6.md"
         },
       {
         "title": "Need Help?",
