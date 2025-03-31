@@ -5,7 +5,7 @@
 This section starts with a simple application configured with Coherence using [Spring Framework](https://spring.io/projects/spring-framework).
 We will extend this application with various Coherence features and explain how they are used.
 
-Estimated time: 315 minutes
+Estimated time: 30 minutes
 
 ### Objectives
 

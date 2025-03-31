@@ -222,7 +222,7 @@ The following has already been set up in this VM:
    You will see output showing `1` and `2` which are the automatically generated ID's.
 
    > Note: Only the `GET /api/people/id` method is cached (unlike the events API). This can be seen in the code [DefaultPersonService#getPerson()](https://github.com/coherence-community/coherence-spring/blob/b285ad6ff3eb80e4d6530f91aae991fb69f6dd65/samples/coherence-spring-demo/coherence-spring-demo-core/src/main/java/com/oracle/coherence/spring/demo/service/impl/DefaultPersonService.java#L51) as shown below.
-   
+
       ```java
       @Cacheable(cacheNames="people", key="#personId")
       @Override
