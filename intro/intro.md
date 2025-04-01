@@ -9,9 +9,12 @@ This workshop introduces you to working with Coherence and Spring, and covers th
 * Provides hands-on experience working with Cache Events, Coherence Spring Data and Coherence Spring Session
 
 Coherence Spring features dedicated support to bootstrap Oracle Coherence and to inject Coherence resources into Spring beans 
-as well as to inject Spring beans into Coherence resources. Spring’s dependency injection (DI)
-support simplifies application code as Oracle Coherence maps, caches and topics are just injected instead 
-of being obtained explicitly via Coherence APIs. Furthermore, using annotated event listener methods simplifies building reactive code that responds to Coherence cache events.
+as well as to inject Spring beans into Coherence resources. 
+
+Spring’s dependency injection (DI) support simplifies application code as Oracle Coherence maps, caches and topics are just injected instead 
+of being obtained explicitly via Coherence APIs. 
+
+Furthermore, using annotated event listener methods simplifies building reactive code that responds to Coherence cache events.
 
 Estimated time: 60 minutes
 
