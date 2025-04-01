@@ -24,7 +24,7 @@ You should have completed the previous labs.
 
 ## Task 1: Create the CustomerRepository
 
-1. In the base `pom.xml`, add the following dependency so you can use the `CoherenceRepository ` interfaceinterface:
+1. In the base `pom.xml`, add the following dependency so you can use the `CoherenceRepository` interface:
 
       ```xml
       <dependency>
