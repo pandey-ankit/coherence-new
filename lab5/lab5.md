@@ -1,4 +1,4 @@
-# Coherence Spring Data
+# Use Coherence Spring Data
 
 ## Introduction
 

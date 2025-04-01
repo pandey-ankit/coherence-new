@@ -1,4 +1,4 @@
-# **Getting Started with Coherence and Spring**
+# Get Started with Coherence and Spring
 
 ## Introduction
 

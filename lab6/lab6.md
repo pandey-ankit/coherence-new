@@ -1,4 +1,4 @@
-# Coherence Spring Session
+# Enable Coherence Spring Session
 
 ## Introduction
 
