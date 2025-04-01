@@ -6,8 +6,7 @@ This workshop introduces you to working with Coherence and Spring, and covers th
 
 * An overview of Coherence Spring Boot Integration
 * Quickstart Demo using [Cache Abstraction](https://docs.spring.io/spring-framework/reference/integration/cache.html) for result caching
-* Get started with Coherence and Spring
-* Working with Cache Events, Coherence Spring Data and Coherence Spring Session
+* Provides hands-on experience working with Cache Events, Coherence Spring Data and Coherence Spring Session
 
 Coherence Spring features dedicated support to bootstrap Oracle Coherence and to inject Coherence resources into Spring beans 
 as well as to inject Spring beans into Coherence resources. Spring’s dependency injection (DI)
