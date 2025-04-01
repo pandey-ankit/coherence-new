@@ -13,7 +13,7 @@ Estimated time: 15 minutes
 In this lab, you will:
 
 * Configure Spring Session
-* Modify the application to add a 'hello' service
+* Modify the application to add a `SessionController` service to read and write to session
 * View the session information in VisualVM
 
 ### Prerequisites
