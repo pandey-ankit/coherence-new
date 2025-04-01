@@ -232,7 +232,7 @@ same sessions.
 
     This will invalidate the session, then access `http://localhost:8080/api/session/counter2` and you will see the counter start incrementing again as the session was invalidated.
 
-## Task 4: Change the session timeout to 30 seconds
+## Task 3: Change the session timeout to 30 seconds
 
 In this task we will change the session timeout from 1800 seconds to 30 seconds and observe the results.
 
