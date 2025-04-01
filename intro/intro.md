@@ -4,10 +4,15 @@
 
 This workshop introduces you to working with Coherence and Spring, and covers the following topics:
 
-* Quickstart using Spring's [Cache Abstraction](https://docs.spring.io/spring-framework/reference/integration/cache.html) for result caching
-* Getting started with Spring Boot
-* Using Coherence Spring Data
-* Using Coherence Spring Session
+* An overview of Coherence Spring Boot Integration
+* Quickstart Demo using [Cache Abstraction](https://docs.spring.io/spring-framework/reference/integration/cache.html) for result caching
+* Get started with Coherence and Spring
+* Working with Cache Events, Coherence Spring Data and Coherence Spring Session
+
+Coherence Spring features dedicated support to bootstrap Oracle Coherence and to inject Coherence resources into Spring beans 
+as well as to inject Spring beans into Coherence resources. Spring’s dependency injection (DI)
+support simplifies application code as Oracle Coherence maps, caches and topics are just injected instead 
+of being obtained explicitly via Coherence APIs. Furthermore, using annotated event listener methods simplifies building reactive code that responds to Coherence cache events.
 
 Estimated time: 60 minutes
 
@@ -17,8 +22,9 @@ In this workshop, you will:
     
 * Run the Quickstart using Cache Abstraction 
 * Use Coherence in Spring Boot applications
+* Add Coherence event listeners
 * Work with Spring Data and Spring Session
-* Build and run the demo Spring Boot applications
+* Use VisualVM and the Coherence VisualVM plugin to view cache information
 
 ### Prerequisites
      
@@ -34,6 +40,7 @@ low-latency data storage, polyglot grid computing, and asynchronous event stream
 
 ## Learn More
 
+* [Coherence Spring Documentation](https://docs.coherence.community/coherence-spring/docs/latest/)
 * [Coherence Documentation](https://docs.oracle.com/en/middleware/standalone/coherence/14.1.2.0/index.html)
 * [Coherence Community](https://coherence.community/)
 
