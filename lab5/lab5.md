@@ -150,7 +150,7 @@ It is possible to use either `org.springframework.data.annotation.Id` or `javax.
       curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
       ```
 
-   > Note: You can verify the customers cache  by using VisualVM as we did in the previous lab. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
+   > Note: You can verify the customers cache by using VisualVM as we did in the previous lab. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
 
 
 
@@ -165,4 +165,4 @@ It is possible to use either `org.springframework.data.annotation.Id` or `javax.
 
 * **Author** - Tim Middleton
 * **Contributors** - Ankit Pandey, Sid Joshi
-* **Last Updated By/Date** - Ankit Pandey, November 2024
+* **Last Updated By/Date** - Ankit Pandey, April 2025

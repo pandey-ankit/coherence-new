@@ -82,35 +82,32 @@ You should have completed the previous labs.
 
       > Note: The above enables specific POF serialization required by Coherence Spring Session when using POF. Also as we are using entry processors, we must also specify the `SessionUpdateEntryProcessor` class. 
 
-4.  Specify to use the above POF config file by adding the following to `src/main/resources/application.properites` 
+4.  Specify to use the above POF config file by adding the following to `src/main/resources/application.properites`: 
 
       ```properties
       coherence.pof.config=example-pof-config.xml
       ```
  
-5.  Add a new class called `HelloController` in the same package as `DemoController.java` with the following contents:
+5.  Add a new class called `SessionController` in the same package as `DemoController.java` with the following contents:
 
       ```java
       package com.oracle.coherence.demo.frameworks.springboot.controller;
 
       import jakarta.servlet.http.HttpSession;
-
       import org.apache.logging.log4j.LogManager;
       import org.apache.logging.log4j.Logger;
-
       import org.springframework.beans.factory.annotation.Autowired;
       import org.springframework.http.ResponseEntity;
       import org.springframework.stereotype.Controller;
-      import org.springframework.web.bind.annotation.DeleteMapping;
       import org.springframework.web.bind.annotation.GetMapping;
       import org.springframework.web.bind.annotation.PathVariable;
       import org.springframework.web.bind.annotation.RequestMapping;
-
+      
       @Controller
-      @RequestMapping(path = "/api/hello")
-      public class HelloController {
+      @RequestMapping(path = "/api/session")
+      public class SessionController {
 
-          private static final Logger logger = LogManager.getLogger(HelloController.class);
+          private static final Logger logger = LogManager.getLogger(SessionController.class);
 
           @Autowired
           private HttpSession session;
@@ -133,36 +130,137 @@ You should have completed the previous labs.
               }
 
               logger.info("Session ID: {}; counterValue = {}", this.session.getId(), counterValue);
-              return ResponseEntity.ok("hello " + counter + "=" + counterValue);
+              return ResponseEntity.ok(this.session.getId() + " " + counter + "=" + counterValue + "\n");
           }
 
           /**
-           * Deletes the specified counter variable on each request.
+           * Deletes the specified counter variable.
            * @param counter the counter name to delete
            */
-          @DeleteMapping("/{counter}")
-          public ResponseEntity<String> deleteCounter(@PathVariable String counter) {
-              this.session.removeAttribute(counter);
+         @GetMapping("/delete/{counter}")
+         public ResponseEntity<String> deleteCounter(@PathVariable String counter) {
+             this.session.removeAttribute(counter);
 
-              logger.info("Session ID: {}; deleted counter = {}", this.session.getId(), counter);
-              return ResponseEntity.ok("deleted counter " + counter);
-          }
+             logger.info("Session ID: {}; deleted counter = {}", this.session.getId(), counter);
+             return ResponseEntity.ok(this.session.getId() + " deleted counter " + counter + "\n");
+         }
+
+         /**
+          * Invalidates the {@link HttpSession} session.
+          */
+         @GetMapping("/invalidate")
+         public ResponseEntity<String> invalidate() {
+             this.session.invalidate();
+
+             logger.info("Session ID: {}; Invalidated", this.session.getId());
+             return ResponseEntity.ok(this.session.getId() + " invalidated\n");
+         }
       }
       ```
 
+      The example above exposes two endpoints where we can issue CURL requests to increment a specific session attribute or remove a session attribute.
+      
+      This uses the standard Spring `HttpSession` which has been wired through the previous step to use Coherence. 
 
-## Task 2: Build and run the 
+## Task 2: Build and run the example
 
+In this step, we will run various CURL command a number of time and observe the behaviour of the responses and 
+view the session cache in Coherence.  We will use the `-c` option of curl to save and utilize session cookies to simulate the 
+same sessions.
 
+1.  In a terminal, issue the following command to build the application:
 
-## Task 3: Title for task 3
+      ```bash
+      mvn clean install -DskipTests
+      ```
 
+2.  Then run the following command to start the application:
 
+      ```bash
+      java -jar target/springboot-1.0-SNAPSHOT.jar
+      ```
 
-## Task 4: Title for task 3
-       
+3. In a separate terminal window, run the following command to access the `/api/session` resource with the session attribute `counter1`:
 
+      ```bash
+      curl -i -c cookie.txt http://localhost:8080/api/session/counter1
+      ```
+   
+      The output should be similar to the following and the cookie information will be stored to the file `cookie.txt`
 
+      ```bash
+      HTTP/1.1 200
+      Set-Cookie: SESSION=Zjk5NTRlMWItMzVkNC00YTJkLThhNjktNWYyMDZkZjZiMTI1; Path=/; HttpOnly; SameSite=Lax
+      Content-Type: text/plain;charset=UTF-8
+      Content-Length: 48
+      Date: Tue, 01 Apr 2025 04:58:16 GMT
+
+      f9954e1b-35d4-4a2d-8a69-5f206df6b125 counter1=1
+      ```
+   
+      > Note: You should also be seeing a log message in the Spring application indicating what is happening.
+
+4.  In the same terminal, run the following command to issue the CURL commend to use the cookie from the file.
+
+      ```bash
+      curl -i -b cookie.txt http://localhost:8080/api/session/counter1
+      ```
+
+      You will see the output shows the `counter1` attribute with a value of 2 as we have specified to use the same cookie to simulate the same session.
+
+      ```bash
+      f9954e1b-35d4-4a2d-8a69-5f206df6b125 counter1=2  
+      ```
+
+      > Note: You can verify the `spring:session:sesisons` cache by using VisualVM as we did in the previous lab. You should see there is one entry for our session. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
+
+5.  Execute the command multiple times to keep incrementing the session:
+
+      ```bash
+      curl -i -b cookie.txt http://localhost:8080/api/session/counter1
+      ```
+
+6.  Access the URL `http://localhost:8080/api/session/counter1` via a web browser.
+ 
+       You will see a second cache entry in VisualVM as the browser is a new session. The counter will also increase each time you refresh.
+
+7.  Access the URL `http://localhost:8080/api/session/counter2` via a web browser.
+ 
+      Keep refreshing the browser to increase the new counter.
+
+8.  Access the URL `http://localhost:8080/api/session/invalidate` via a web browser.
+
+    This will invalidate the session, then access `http://localhost:8080/api/session/counter2` and you will see the counter start incrementing again as the session was invalidated.
+
+## Task 4: Change the session timeout to 30 seconds
+
+In this task we will change the session timeout from 1800 seconds to 30 seconds and observe the results.
+
+1.  Edit the file `CoherenceConig.java` and change the `sessionTimeoutInSeconds` to 30.
+
+      ```java
+      @EnableCoherenceHttpSession(
+          cache = "spring:session:sessions",
+          flushMode = FlushMode.ON_SAVE,
+          sessionTimeoutInSeconds = 30,
+          useEntryProcessor = true
+      )
+      public class CoherenceConfig {
+      ...      
+      }
+      ```       
+
+2.  Stop, rebuild and re-run the application as described previously.
+
+3.  Re-open VisualVM and connect to the new process.
+
+4.  Access the URL `http://localhost:8080/api/session/counter1` via a web browser.
+
+    You will see a second cache entry in VisualVM as the browser is a new session. The counter will also increase each time you refresh.
+
+5.  Wait for more than 30 seconds and ensure that you see no entries in the cache. This means the session was invalidated.    
+
+6.  Access the browser and you will see a new session created and the counter start a 1.
    
 ## Learn More
             
@@ -172,4 +270,4 @@ You should have completed the previous labs.
 
 * **Author** - Tim Middleton
 * **Contributors** - Ankit Pandey, Sid Joshi
-* **Last Updated By/Date** - Ankit Pandey, November 2024
+* **Last Updated By/Date** - Ankit Pandey, April 2025
