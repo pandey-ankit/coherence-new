@@ -6,8 +6,8 @@ This workshop introduces you to working with Coherence and Spring, and covers th
 
 * Quickstart using Spring's [Cache Abstraction](https://docs.spring.io/spring-framework/reference/integration/cache.html) for result caching
 * Getting started with Spring Boot
-* Spring Session Support
-* Spring Data
+* Using Coherence Spring Data
+* Using Coherence Spring Session
 
 Estimated time: 60 minutes
 
