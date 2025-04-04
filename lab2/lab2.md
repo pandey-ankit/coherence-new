@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This section starts with a simple application configured with Coherence using [Spring Framework](https://spring.io/projects/spring-framework).
+This section starts with a simple application configured with Coherence using the [Spring Framework](https://spring.io/projects/spring-framework).
 We will extend this application with various Coherence features and explain how they are used.
 
 Estimated time: 30 minutes
@@ -214,7 +214,7 @@ In this task, we will cover the application configuration and code.
 
       ```properties 
       # Common Coherence system properties
-      # Enable POF serialization
+      # Enables POF serialization
       coherence.pof.enabled=true
       # Confine Coherence to the current server
       coherence.wka=127.0.0.1
@@ -224,7 +224,7 @@ In this task, we will cover the application configuration and code.
   
       The three properties are explained below: 
 
-      1. `coherence.pof.enabled=true` enable serialization using Coherence's Portable Object Format (POF). POF is a language agnostic binary format. POF is efficient in both space and time and is a cornerstone technology in Coherence. See [the documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-portable-object-format.html) for more information.
+      1. `coherence.pof.enabled=true` enables serialization using Coherence's Portable Object Format (POF). POF is a language agnostic binary format. POF is efficient in both space and time and is a cornerstone technology in Coherence. See [the documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-portable-object-format.html) for more information.
       2. `coherence.wka=127.0.0.1` restricts the Coherence cluster traffic to the localhost only. The loopback address is just used for demonstration purposes and would not be used in production.
       3. `coherence.management.http=all` this is not mandatory, but if set to `all`, enables Coherence management over REST api
 
@@ -295,7 +295,7 @@ In this task, we will cover the application configuration and code.
       }
       ```
       
-   Note: The `@CoherenceCache` annotation injects and `NamedCache` with key of `Integer` and value of `Customer. When using basic cache operations they are the same as `Map` operations. For example `values()`, `put()` and `remove()`.
+   Note: The `@CoherenceCache` annotation injects and `NamedCache` with key of `Integer` and value of `Customer`. When using basic cache operations they are the same as `Map` operations. For example `values()`, `put()` and `remove()`.
 
 ## Learn More
             

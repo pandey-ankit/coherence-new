@@ -25,7 +25,7 @@ In this lab, you will:
 * Understand how Spring Cache Abstraction is implemented
 * Run the Spring Boot demo application
 
-> Note: There are more efficient was to integrate Coherence with databases using cache stores, but this is just to show how the out-of-the-box Cache Abstraction works with Spring and Coherence.
+> Note: There are more efficient ways to integrate Coherence with databases using cache stores, but this is just to show how the out-of-the-box Cache Abstraction works with Spring and Coherence.
 
 ### Prerequisites
      
@@ -206,7 +206,7 @@ The following has already been set up in this VM:
       curl --request GET 'http://localhost:8080/api/events/1'
       ```
    
-   If you check VisualVM, you will see that the count of entries in teh cache is now one.
+   If you check VisualVM, you will see that the count of entries in the cache is now one.
 
    **IMAGE SHOWING ENTIRES IN CACHE IS ONE**
 
@@ -227,7 +227,7 @@ The following has already been set up in this VM:
       @Cacheable(cacheNames="people", key="#personId")
       @Override
       public Person getPerson(Long personId) {
-        return this.personRepository.findById(personId).get();
+         return this.personRepository.findById(personId).get();
       }
       ```
 
@@ -301,7 +301,7 @@ The following has already been set up in this VM:
    > Note: The time difference is not a great deal as we are using in memory database, but as mentioned before
    > you can image with the database calls taking much longer, in the 10's of milliseconds, the saving of time and offloading could be significant. 
 
-## Task 4: The code behind the scenes
+## Task 5: The code behind the scenes
 
 What is involved to make this all work? Using Spring Boot, the setup is incredibly simple. 
 We take advantage of Spring Boot’s AutoConfiguration capabilities, and the sensible defaults provided by Coherence Spring.
@@ -322,7 +322,7 @@ as well as the desired dependency for Coherence.
       <dependency>
         <groupId>com.oracle.coherence.ce</groupId>
         <artifactId>coherence</artifactId>                     
-        <version>24.09</version>
+        <version>25.03</version>
       </dependency>
       ```   
    

@@ -49,7 +49,7 @@ You should have completed the previous labs.
       Notes regarding the above:      
     
       * `@EnableCoherenceHttpSession` - Enables Spring Session support for Coherence
-      * `session` - Specifies the name of the Coherence Session. Optional, Defaults to Coherence' default session.
+      * `session` - not used in the above example, specifies the name of the Coherence Session. Optional, Defaults to Coherence' default session.
       * `cache` - The name of the cache to use. Optional. Defaults to spring:session:sessions.
       * `flushMode` - The FlushMode to use. Optional. Defaults to FlushMode.ON_SAVE.
       * `sessionTimeoutInSeconds` The session timeout. Optional. Defaults to 1800 seconds (30 minutes)
@@ -164,9 +164,8 @@ You should have completed the previous labs.
 
 ## Task 2: Build and run the example
 
-In this step, we will run various CURL command a number of time and observe the behaviour of the responses and 
-view the session cache in Coherence.  We will use the `-c` option of curl to save and utilize session cookies to simulate the 
-same sessions.
+In this step, we will run various CURL command a number of times and observe the behaviour of the responses and 
+view the session cache in Coherence.  We will use the `-c` option of curl to save and utilize session cookies to ensure proper session association.
 
 1.  In a terminal, issue the following command to build the application:
 
@@ -206,7 +205,8 @@ same sessions.
       curl -i -b cookie.txt http://localhost:8080/api/session/counter1
       ```
 
-      You will see the output shows the `counter1` attribute with a value of 2 as we have specified to use the same cookie to simulate the same session.
+      You will see the output shows the `counter1` attribute with a value of 2 as we have specified to use the same cookie
+      to ensure proper session association.
 
       ```bash
       f9954e1b-35d4-4a2d-8a69-5f206df6b125 counter1=2  

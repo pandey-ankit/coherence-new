@@ -48,14 +48,13 @@ You should have completed the previous labs.
       ```
 
    > Note: The Coherence NamedMap that will be used by the Repository implementation will be
-   > based on the type name in the Repository class assuming the Repository name follows the format of [Type]Repository (e.g., CustomerRepository will use a NamedMap called customer). If this is not desired, the name may instead be passed by the @CoherenceMap annotation which we are doing in our 
-   > case to use `people`.  
+   > what is specified within the @CoherenceMap annotation.
 
 ## Task 3: Configure the Repository
 
 As Coherence is, at its core, a key-value store, mapping Entities for use with a Coherence 
 Repository is relatively simple as only the id needs to be annotated. 
-It is possible to use either `org.springframework.data.annotation.Id` or `javax.persistence.Id` to denote the entity’s id.
+It is possible to use either `org.springframework.data.annotation.Id` or `jakarta.persistence.Id` to denote the entity’s id.
 
 1.  Update the `Customer` class to include the `org.springframework.data.annotation.Id` annotation:
    

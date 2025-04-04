@@ -7,10 +7,11 @@ Coherence produces a number of events that can be used by applications to respon
 
 There are two main types of events in Coherence:
 
-* [Map Events](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-map-events.html) which are subscribed to using a `MapListener`
-* [Live Events](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-live-events.html) which are subscribed to using an `EventInterceptor`
+* [Map Events](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-map-events.html) which are subscribed to using a `MapListener` - in Spring annotated by `@CoherenceEventListener` only
+* [Live Events](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/using-live-events.html) which are subscribed to using an `EventInterceptor` - in Spring annotated by `@CoherenceEventListener` and `@Synchronous`
 
-Spring makes subscribing to both of these event-types, as well as others, much simpler using observer methods annotated with `@CoherenceEventListener`.
+Spring makes subscribing to both of these event-types, and others, much simpler using observer methods annotated 
+with `@CoherenceEventListener` and optionally `@Synchronous`.
 
 Estimated time: 15 minutes
 
@@ -18,10 +19,10 @@ Estimated time: 15 minutes
 
 In this lab, you will:
        
-* Add Map Events on the customers cache to show when data has been modified
-* Add Entry Event, (Partitioned Cache Events) to modify data as it is being updated          
+* Add MapListeners on the customers cache to show when data has been modified
+* Add Synchronous EventInterceptors, (Partitioned Cache Events) to modify data as it is being updated          
 
-> Note: there are other events in the Live Events area which we do not cover in this labe, including the following:
+> Note: there are other events in the Live Events area which we do not cover in this lab, including the following:
 > * Partitioned Cache Lifecycle Events - A set of events that represent the operations for creating a cache, destroying a cache, and clearing all entries from a cache.
 > * Partitioned Service Events - A set of events that represent the operations being performed by a partitioned service. Partitioned service events include both partition transfer events and partition transaction events. Partition transfer events are related to the movement of partitions among cluster members. Partition transaction events are related to changes that may span multiple caches and are performed within the context of a single request.
 > * Lifecycle Events - A set of events that represent the activation and disposal of a ConfigurableCacheFactory instance.
@@ -33,7 +34,7 @@ In this lab, you will:
 
 You should have completed the previous labs.
 
-## Task 1: Adding Map Events
+## Task 1: Adding MapListeners
 
 In this task we will add Coherence event listeners to respond to cache `MapEvents`.  
 A `MapEvent` observer method is a method on a Spring bean that is annotated with `@CoherenceEventListener`. 
@@ -88,14 +89,17 @@ for updates and the old value for deletes. You can also filter events based upon
       Looking a one of the methods `onCustomerInserted`, this is annotated as `@CoherenceEventListener`, which indicates to 
       Coherence that this is an event listener. The `@Inserted` annotation indicates this should be run only on insert events and the `@CacheName` specifies the cache that this listener applies to.
 
-      > Note: You will also have to add the following imports:
-      > 1. `import com.oracle.coherence.common.base.Logger;`
-      > 2. `import com.oracle.coherence.spring.annotation.event.CacheName;` 
-      > 3. `import com.oracle.coherence.spring.annotation.event.Deleted;` 
-      > 4. `import com.oracle.coherence.spring.annotation.event.Inserted;` 
-      > 5. `import com.oracle.coherence.spring.annotation.event.Updated;`
-      > 6. `import com.oracle.coherence.spring.event.CoherenceEventListener;`
-      > 7. `import com.tangosol.util.MapEvent;`
+      Note: You will also have to add the following imports:
+   
+      ```java
+      import com.oracle.coherence.common.base.Logger;
+      import com.oracle.coherence.spring.annotation.event.CacheName; 
+      import com.oracle.coherence.spring.annotation.event.Deleted; 
+      import com.oracle.coherence.spring.annotation.event.Inserted;
+      import com.oracle.coherence.spring.annotation.event.Updated;
+      import com.oracle.coherence.spring.event.CoherenceEventListener;
+      import com.tangosol.util.MapEvent;
+      ```
 
 2. In a terminal, issue the following command to build the application:
 
@@ -190,10 +194,10 @@ for updates and the old value for deletes. You can also filter events based upon
       Note: The reason for both members receiving the events is that each of the servers has registered for it. This is fine for responding to events,
       but in the next lab we cover how we can write interceptors to work with or modify data before, during or after it has been added to the cluster. 
     
-## Task 2: Adding synchronous Entry Events to mutate data
+## Task 2: Adding EventInterceptor to mutate data
     
 An EntryEvent is emitted when data is mutated on a cache. These events are only emitted on the storage enabled member 
-that is the primary owner of the entry that is mutated.
+that is the primary owner of the entry that is mutated. The `@Synchronous` annotation is added to indicate this is an `EventInterceptor`.
 
 For example, the onEvent method below will receive entry events for all caches.
 
@@ -214,7 +218,7 @@ There are a number of different EntryEvent types:
 * Removing - an entry is being deleted from a cache, use the @Removing annotation
 * Removed - an entry has been deleted from a cache, use the @Removed annotation
            
-In this section we will create a `Inserting` or `Updating` events to modify data before it is commited to the cache.
+In this section we will create an `Inserting` or `Updating` listeners to modify data during or after is commited to the cache.
 
 To restrict the EntryEvent types received by a method apply one or more of the annotations above to the method parameter. For example, the method below will receive Inserted and Removed events.
   
@@ -288,7 +292,7 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
       curl http://localhost:8080/api/customers/1
       ```   
    
-   You should see output similar to the following indicating that the customer has been retrieved and the name is in fact upeercase.
+   You should see output similar to the following indicating that the customer has been retrieved and the name is in fact uppercase.
 
       ```json 
       {"id":1,"name":"TIM","balance":1000.0}
