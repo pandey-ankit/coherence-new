@@ -74,6 +74,13 @@ It is possible to use either `org.springframework.data.annotation.Id` or `jakart
       @EnableCoherenceRepositories
       public class CoherenceConfig {
       ```
+    
+      You will need to include the following imports:
+
+      ```java
+      import com.oracle.coherence.spring.configuration.annotation.EnableCoherence;
+      import com.oracle.coherence.spring.data.config.EnableCoherenceRepositories;
+      ```
 
 3.  Update `DemoController.java` to contain only the following, which removes the `@CoherenceCache` annotations as we are only using spring data, but storing in Coherence cache.
 
@@ -149,9 +156,19 @@ It is possible to use either `org.springframework.data.annotation.Id` or `jakart
       curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
       ```
 
-   > Note: You can verify the customers cache by using VisualVM as we did in the previous lab. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
+   > Note: You can verify the customers cache by using VisualVM as we did in the previous lab. This shows the repository API is wring to and reading from Coherence.
+   > Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
 
+   You can also verify by running the following:
+      ```bash
+      curl http://localhost:8080/api/customers/1
+      ```   
 
+   You should see output similar to the following indicating that the customer has been retrieved and the name is in fact uppercase.
+
+      ```json 
+      {"id":1,"name":"TIM","balance":1000.0}
+      ```
 
 ## Learn More
 

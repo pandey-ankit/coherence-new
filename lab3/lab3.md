@@ -99,6 +99,7 @@ for updates and the old value for deletes. You can also filter events based upon
       import com.oracle.coherence.spring.annotation.event.Updated;
       import com.oracle.coherence.spring.event.CoherenceEventListener;
       import com.tangosol.util.MapEvent;
+      import com.oracle.coherence.spring.annotation.WhereFilter;
       ```
 
 2. In a terminal, issue the following command to build the application:
@@ -184,11 +185,10 @@ for updates and the old value for deletes. You can also filter events based upon
       curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 6000}' http://localhost:8080/api/customers
       ```      
    
-      You should see output similar to the following showing the new and old values captured **on both servers**.
+      You should see output similar to the following showing the new customer **on both servers**.
 
       ```bash
-      ... Updated customer key=1, old value=Customer{id=1, name='Tim', balance=1000.0}, 
-      new value=Customer{id=1, name='Tim', balance=5000.0}
+      ... Inserted customer key=1, value=Customer{id=1, name='Tim', balance=6000.0}
       ```        
 
       Note: The reason for both members receiving the events is that each of the servers has registered for it. This is fine for responding to events,
@@ -253,10 +253,15 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
       }
       ```  
     
-     > Note: You will also have to add the following imports:
-      > 1. `import com.oracle.coherence.spring.annotation.event.Inserting;`
-      > 2. `import com.oracle.coherence.spring.annotation.event.Synchronous;`
-      > 3. `import com.tangosol.net.events.partition.cache.EntryEvent;`
+      Note: You will also have to add the following imports:
+
+      ```java
+      import com.oracle.coherence.spring.annotation.event.Inserting;
+      import com.oracle.coherence.spring.annotation.event.Updating;
+      import com.oracle.coherence.spring.annotation.event.Synchronous;
+      import com.tangosol.net.events.partition.cache.EntryEvent;
+      import com.tangosol.net.events.partition.cache.EntryEvent;
+      ```
 
    > Note: It is important that the amount of work you do within a synchronous event listener is minimized as you are holding
    > an implicit exclusive lock on the entry while this code runs. You should not be doing any operations that do external calls to

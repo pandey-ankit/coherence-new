@@ -59,7 +59,7 @@ You should have completed the previous labs.
       </cache-config>
       ```
 
-   > Note: This is just a basic cache configuration for the moment. We will update and explain this more in future labs.
+   > Note: This is just a basic cache configuration to demonstrate how you can configure and use a custom config and potentially change it in the future.
 
 ## Task 2: Use the new cache configuration
 

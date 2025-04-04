@@ -32,7 +32,7 @@ You should have completed the previous labs.
       </dependency>
       ```
 
-2.  Add the `@EnableCoherenceHttpSession` annotation to the existing `CoherenceConig.java` to enable the Coherence Spring Session.
+2.  Add the `@EnableCoherenceHttpSession` annotation to the existing annotations in `CoherenceConig.java` to enable the Coherence Spring Session.
 
       ```java
       @EnableCoherenceHttpSession(
@@ -44,6 +44,13 @@ You should have completed the previous labs.
       public class CoherenceConfig {
       ...      
       }
+      ```
+
+      Note: You will also have to add the following imports:
+ 
+      ```bash
+      import com.oracle.coherence.spring.session.config.annotation.web.http.EnableCoherenceHttpSession;
+      import org.springframework.session.FlushMode;
       ```
     
       Notes regarding the above:      
