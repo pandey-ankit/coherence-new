@@ -15,32 +15,32 @@
         {
             "title": "Lab 1: Run the Spring Boot Quick Start Demo",
             "type": "freetier",
-            "filename": "../../lab1/lab1.md"
+            "filename": "../../quickstart/quickstart.md"
         },
         {
             "title": "Lab 2: Get Started with Coherence and Spring",
             "type": "freetier",
-            "filename": "../../lab2/lab2.md"
+            "filename": "../../base-project/base-project.md"
         },
         {
             "title": "Lab 3: Add Events",
             "type": "freetier",
-            "filename": "../../lab3/lab3.md"
+            "filename": "../../add-event/add-event.md"
         },
         {
             "title": "Lab 4: Add a Custom Cache Configuration File",
             "type": "freetier",
-            "filename": "../../lab4/lab4.md"
+            "filename": "../../custom-cache/custom-cache.md"
         },
         {
             "title": "Lab 5: Use Coherence Spring Data",
             "type": "freetier",
-            "filename": "../../lab5/lab5.md"
+            "filename": "../../spring-data/spring-data.md"
         },
         {
             "title": "Lab 6: Enable Coherence Spring Session",
             "type": "freetier",
-            "filename": "../../lab6/lab6.md"
+            "filename": "../../spring-session/spring-session.md"
         },
       {
         "title": "Need Help?",
