@@ -1,4 +1,4 @@
-# Get Started with Coherence and Spring
+# Coherence application with Spring Framework
 
 ## Introduction
 
@@ -21,16 +21,16 @@ You should have completed the previous labs.
 The following has already been set up in this VM:
 
 1. The `spring-workshop` repository has been cloned from .... into `~/spring-workshop`. We will build upon this workshop in this lab.
-    
-> Note: Make sure you have stopped all Java processes from the previous lab.
+
+    > Note: Make sure you have stopped all Java processes from the previous lab.
 
 ## Task 1: Build and run the simple example
 
 1. Open a new terminal and change to the `spring-workshop` directory and verify the environment.
 
       ```bash
-      cd ~/spring-workshop
-      mvn -v
+      <copy>cd ~/spring-workshop
+      mvn -v</copy>
       ```   
    
    You will have output similar to the following:
@@ -46,7 +46,7 @@ The following has already been set up in this VM:
 2. In the same terminal, issue the following command to build the application:
 
       ```bash
-      mvn clean install -DskipTests
+      <copy>mvn clean install -DskipTests</copy>
       ```
    
    You should see output similar to the following indicating that the sample has been built:
@@ -60,7 +60,7 @@ The following has already been set up in this VM:
 3. In the same terminal, run the following command to start the application:
 
       ```bash
-      java -jar target/springboot-1.0-SNAPSHOT.jar
+      <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
       ```
 
    You should see output similar to the following indicating that the sample is running:
@@ -74,13 +74,13 @@ The following has already been set up in this VM:
 4. In a new terminal window, run the following command to insert a customer.
 
       ```bash
-      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
+      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers</copy>
       ```
 
 5. Run the following command to retrieve a customer.
 
       ```bash
-      curl http://localhost:8080/api/customers/1
+      <copy>curl http://localhost:8080/api/customers/1</copy>
       ```   
    
    You should see output similar to the following indicating that the customer has been retrieved:
@@ -92,7 +92,7 @@ The following has already been set up in this VM:
 6. Run the following command to delete a customer.
 
       ```bash
-      curl -X DELETE http://localhost:8080/api/customers/1
+      <copy>curl -X DELETE http://localhost:8080/api/customers/1</copy>
       ```   
    
    You should see output similar to the following showing the deleted customer.
@@ -101,14 +101,10 @@ The following has already been set up in this VM:
       {"id":1,"name":"Tim","balance":1234.0}
       ```  
    
-   > Note: You can verify the customers cache  by using VisualVM as we did in the previous lab. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
+      > Note: You can verify the customers cache  by using VisualVM as we did in the previous lab. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
    
 7. Use `CTRL-C` to quit the Spring Boot application before you move to the next task.
-    
-> Note: In this simple example we are running the application as a single storage-enabled member meaning that 
-> the application is serving JAX-RS endpoints as well as storing data. This is fine for a demo application, but 
-> typical applications usually have a separate tier of storage-enabled clients, and the application is storage-disabled
-> and allows for scaling of both the client and coherence cluster tiers.
+    > Note: In this simple example we are running the application as a single storage-enabled member meaning that  the application is serving JAX-RS endpoints as well as storing data. This is fine for a demo application, but typical applications usually have a separate tier of storage-enabled clients, and the application is storage-disabled and allows for scaling of both the client and coherence cluster tiers.
 
 ## Task 2: Understand the simple application dependencies
 
@@ -295,7 +291,7 @@ In this task, we will cover the application configuration and code.
       }
       ```
       
-   Note: The `@CoherenceCache` annotation injects and `NamedCache` with key of `Integer` and value of `Customer`. When using basic cache operations they are the same as `Map` operations. For example `values()`, `put()` and `remove()`.
+      > Note: The `@CoherenceCache` annotation injects and `NamedCache` with key of `Integer` and value of `Customer`. When using basic cache operations they are the same as `Map` operations. For example `values()`, `put()` and `remove()`.
 
 ## Learn More
             

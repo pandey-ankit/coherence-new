@@ -27,28 +27,27 @@ You should have completed the previous labs.
 1. In the base `pom.xml`, add the following dependency so you can use the `CoherenceRepository` interface:
 
       ```xml
-      <dependency>
+      <copy><dependency>
         <groupId>com.oracle.coherence.spring</groupId>
         <artifactId>coherence-spring-data</artifactId>
         <version>${coherence-spring.version}</version>
-      </dependency>
+      </dependency></copy>
       ```
 
 2. Create a new file called `CustomerRepository.java` in the directory `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/` with the following contents:
 
       ```java
-      package com.oracle.coherence.demo.frameworks.springboot;
+      <copy>package com.oracle.coherence.demo.frameworks.springboot;
 
       import com.oracle.coherence.spring.data.config.CoherenceMap;
       import com.oracle.coherence.spring.data.repository.CoherenceRepository;
 
       @CoherenceMap("customers")
       public interface CustomerRepository extends CoherenceRepository<Customer, Integer> {
-      }
+      }</copy>
       ```
 
-   > Note: The Coherence NamedMap that will be used by the Repository implementation will be
-   > what is specified within the @CoherenceMap annotation.
+   > Note: The Coherence NamedMap that will be used by the Repository implementation will be what is specified within the @CoherenceMap annotation.
 
 ## Task 3: Configure the Repository
 
@@ -61,7 +60,7 @@ It is possible to use either `org.springframework.data.annotation.Id` or `jakart
       ```java
       public class Customer {
           @JsonProperty("id")
-          @org.springframework.data.annotation.Id
+          <copy>@org.springframework.data.annotation.Id</copy>
           private int id;
           ...
       ```
@@ -69,23 +68,23 @@ It is possible to use either `org.springframework.data.annotation.Id` or `jakart
 2.  Add the following to the existing `CoherenceConig.java` to enable the repository.
 
       ```java
-      @Configuration
+      <copy>@Configuration
       @EnableCoherence
-      @EnableCoherenceRepositories
+      @EnableCoherenceRepositories</copy>
       public class CoherenceConfig {
       ```
     
       You will need to include the following imports:
 
       ```java
-      import com.oracle.coherence.spring.configuration.annotation.EnableCoherence;
-      import com.oracle.coherence.spring.data.config.EnableCoherenceRepositories;
+      <copy>import com.oracle.coherence.spring.configuration.annotation.EnableCoherence;
+      import com.oracle.coherence.spring.data.config.EnableCoherenceRepositories;</copy>
       ```
 
 3.  Update `DemoController.java` to contain only the following, which removes the `@CoherenceCache` annotations as we are only using spring data, but storing in Coherence cache.
 
       ```java
-      package com.oracle.coherence.demo.frameworks.springboot.controller;
+      <copy>package com.oracle.coherence.demo.frameworks.springboot.controller;
     
       import com.oracle.coherence.demo.frameworks.springboot.Customer;
     
@@ -136,32 +135,31 @@ It is possible to use either `org.springframework.data.annotation.Id` or `jakart
           public void removeCustomer(@PathVariable int id) {
               customerRepository.findById(id).ifPresent(customer -> customerRepository.delete(customer));
           }
-      }
+      }</copy>
       ```
 
 4.  In a terminal, issue the following command to build the application:
 
       ```bash
-      mvn clean install -DskipTests
+      <copy>mvn clean install -DskipTests</copy>
       ```
 
 5.  Then run the following command to start the application:
 
       ```bash
-      java -jar target/springboot-1.0-SNAPSHOT.jar
+      <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
       ```
 6. In a separate terminal window, run the following command to insert a customer:
 
       ```bash
-      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
+      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers</copy>
       ```
 
-   > Note: You can verify the customers cache by using VisualVM as we did in the previous lab. This shows the repository API is wring to and reading from Coherence.
-   > Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
+   > Note: You can verify the customers cache by using VisualVM as we did in the previous lab. This shows the repository API is wring to and reading from Coherence. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
 
    You can also verify by running the following:
       ```bash
-      curl http://localhost:8080/api/customers/1
+      <copy>curl http://localhost:8080/api/customers/1</copy>
       ```   
 
    You should see output similar to the following indicating that the customer has been retrieved and the name is in fact uppercase.

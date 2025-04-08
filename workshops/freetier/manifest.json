@@ -1,5 +1,5 @@
 {
-    "workshoptitle": "Getting Started with Spring and Coherence",
+    "workshoptitle": "Get Started with Spring and Coherence",
     "help": "livelabs-help-weblogic_us@oracle.com",
     "tutorials": [
         {
@@ -13,12 +13,12 @@
             "filename": "https://oracle-livelabs.github.io/common/labs/cloud-login/pre-register-free-tier-account.md"
         },
         {
-            "title": "Lab 1: Run the Spring Boot Quick Start Demo",
+            "title": "Lab 1: Run the Spring Boot Quickstart Demo",
             "type": "freetier",
             "filename": "../../quickstart/quickstart.md"
         },
         {
-            "title": "Lab 2: Get Started with Coherence and Spring",
+            "title": "Lab 2: Coherence application with Spring Framework",
             "type": "freetier",
             "filename": "../../base-project/base-project.md"
         },

@@ -33,7 +33,7 @@ You should have completed the previous labs.
 2. Add the following contents to the new file:
    
       ```xml
-      <?xml version="1.0"?>
+      <copy><?xml version="1.0"?>
       <cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xmlns="http://xmlns.oracle.com/coherence/coherence-cache-config"
                     xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config coherence-cache-config.xsd">
@@ -56,7 +56,7 @@ You should have completed the previous labs.
             <autostart>true</autostart>
           </distributed-scheme>
         </caching-schemes>
-      </cache-config>
+      </cache-config></copy>
       ```
 
    > Note: This is just a basic cache configuration to demonstrate how you can configure and use a custom config and potentially change it in the future.
@@ -66,7 +66,7 @@ You should have completed the previous labs.
 1. Create a new file called `CoherenceConfig.java` in the directory `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/` with the following contents:
 
       ```java
-      package com.oracle.coherence.demo.frameworks.springboot;
+      <copy>package com.oracle.coherence.demo.frameworks.springboot;
 
       import com.oracle.coherence.spring.configuration.session.SessionConfigurationBean;
       import org.springframework.context.annotation.Bean;
@@ -80,7 +80,7 @@ You should have completed the previous labs.
               sessionConfigurationBean.setConfig("example-cache-config.xml");
               return sessionConfigurationBean;
           }
-      }
+      }</copy>
       ``` 
    
       In the above example, we are only setting the cache configuration file via the `setConfig()` method, but there are 
@@ -92,13 +92,13 @@ You should have completed the previous labs.
 2. In a terminal, issue the following command to re-build the application:
 
       ```bash
-      mvn clean install -DskipTests
+      <copy>mvn clean install -DskipTests</copy>
       ```
 
 3. Then run the following command to start the application:
 
       ```bash
-      java -jar target/springboot-1.0-SNAPSHOT.jar
+      <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
       ```   
    
       You should see output similar to the following indicating our new cache config has been loaded:

@@ -25,7 +25,7 @@ In this lab, you will:
 * Understand how Spring Cache Abstraction is implemented
 * Run the Spring Boot demo application
 
-> Note: There are more efficient ways to integrate Coherence with databases using cache stores, but this is just to show how the out-of-the-box Cache Abstraction works with Spring and Coherence.
+   > Note: There are more efficient ways to integrate Coherence with databases using cache stores, but this is just to show how the out-of-the-box Cache Abstraction works with Spring and Coherence.
 
 ### Prerequisites
      
@@ -47,8 +47,8 @@ The following has already been set up in this VM:
 1. Open a new terminal and change to the `coherence-spring/samples/coherence-spring-demo` directory and verify the environment.
 
       ```bash
-      cd ~/coherence-spring/samples/coherence-spring-demo
-      mvn -v
+      <copy>cd ~/coherence-spring/samples/coherence-spring-demo
+      mvn -v</copy>
       ```   
    
    You will have output similar to the following:
@@ -64,7 +64,7 @@ The following has already been set up in this VM:
 2. In the same terminal, issue the following command to start the application:
 
       ```bash
-      mvn clean install -DskipTests
+     <copy>mvn clean install -DskipTests</copy>
       ```
    
    You should see output similar to the following indicating that the sample has been built:
@@ -86,9 +86,9 @@ The following has already been set up in this VM:
      
 3. In the above output you can see three submodules 
             
-   * Coherence Spring Demo - Core (coherence-spring-demo-core) - Contains common code shared between the following two apps
-   * Coherence Spring Demo - Spring Boot (coherence-spring-demo-boot) - Provides a demo using Spring Boot
-   * Coherence Spring Demo - Classic Spring Framework (coherence-spring-demo-classic) - Provides a demo using Spring Framework without Spring Boot - *We will not be running this demo*
+   * **Coherence Spring Demo - Core (coherence-spring-demo-core)** - Contains common code shared between the following two apps
+   * **Coherence Spring Demo - Spring Boot (coherence-spring-demo-boot)** - Provides a demo using Spring Boot
+   * **Coherence Spring Demo- Classic Spring Framework (coherence-spring-demo-classic)**  - Provides a demo using Spring Framework without Spring Boot - *We will not be running this demo*
                      
 
 ## Task 2: Run The Spring Boot Demo Application
@@ -96,19 +96,18 @@ The following has already been set up in this VM:
 1. In the existing terminal, ensure you are in the `~/coherence-spring/samples/coherence-spring-demo` directory and run the application.
 
       ```bash
-      pwd
-      /home/opc/coherence-spring/samples/coherence-spring-demo  
-      java -Dcoherence.wka=127.0.0.1 -jar coherence-spring-demo-boot/target/coherence-spring-demo-boot-4.3.1-SNAPSHOT.jar 
+      <copy>cd ~/coherence-spring/samples/coherence-spring-demo  
+      java -Dcoherence.wka=127.0.0.1 -jar coherence-spring-demo-boot/target/coherence-spring-demo-boot-4.3.1-SNAPSHOT.jar</copy>
       ```                            
    
-   > Note: We specify `-Dcoherence.wka=127.0.0.1` to ensure the Coherence cluster is confined to the local machine.
+      > Note: We specify `-Dcoherence.wka=127.0.0.1` to ensure the Coherence cluster is confined to the local machine.
 
 ## Task 3: Add events and verify the Coherence cache
 
-1. Open a new terminal tab by using `File->New Tab` and use `curl` to create an event
+1. Open a new terminal tab by using **`File->New Tab`** and use **`curl`** to create an event
 
       ```bash
-      curl --request POST 'http://localhost:8080/api/events?title=First%20Event&date=2025-01-30'
+      <copy>curl --request POST 'http://localhost:8080/api/events?title=First%20Event&date=2025-01-30'</copy>
       ```   
 
    You should see output similar to the following indicating that the Event has been stored.
@@ -144,13 +143,13 @@ The following has already been set up in this VM:
    use the expression `#result.id` to retrieve the primary key of the Event as it was persisted. Thus, 
    the saved Event is added to the cache named events and ultimately also returned and printed to the console.
      
-   > Note: We will cover the code in more detail further down in this lab.
+      > Note: We will cover the code in more detail further down in this lab.
    
 2. Verify the data is in the Coherence cache by running the VisualVM tool. Open a new terminal tab by using `File->New Tab` and run the following:
 
       ```bash
-      cd ~/visualvm_2110/bin
-      ./visualvm
+      <copy>cd ~/visualvm_2110/bin
+      ./visualvm</copy>
       ```   
    
    Once it starts up, you should see a screen similar to the following: 
@@ -169,7 +168,7 @@ The following has already been set up in this VM:
 5. Retrieve the event using the following:
   
       ```bash
-      curl --request GET 'http://localhost:8080/api/events/1'
+      <copy>curl --request GET 'http://localhost:8080/api/events/1'</copy>
       ```   
 
    You should see output similar to the following indicating that the Event has been retrieve.
@@ -185,15 +184,14 @@ The following has already been set up in this VM:
    If you check VisualVM, you will see that the number of gets is now one, which means it was retrieved from the Cache. 
    You should also see no SQL statement being shown on the application log as well confirming this.
  
-   > Note: For this example we are only using an in memory database, but you can image if your database call takes 10-20ms, then returning
-   > the data from the cache instead of the database, significantly reduces the access time and takes load off the backend database.
+      > Note: For this example we are only using an in memory database, but you can image if your database call takes 10-20ms, then returning the data from the cache instead of the database, significantly reduces the access time and takes load off the backend database.
 
    **IMAGE SHOWING GETS OF 1**
 
 6. Delete or evict the event using the following:
   
       ```bash
-      curl --request DELETE 'http://localhost:8080/api/events/1'
+      <copy>curl --request DELETE 'http://localhost:8080/api/events/1'</copy>
       ```
    
    If you check VisualVM, you will see that the count of entries in the cache is now zero.
@@ -203,7 +201,7 @@ The following has already been set up in this VM:
 7. Retrieve the entry again, and you will see that the number of cache entries is now one, and you can see the SQL to load the event from the DB and then it is placed in the cache.
   
       ```bash
-      curl --request GET 'http://localhost:8080/api/events/1'
+      <copy>curl --request GET 'http://localhost:8080/api/events/1'</copy>
       ```
    
    If you check VisualVM, you will see that the count of entries in the cache is now one.
@@ -215,13 +213,13 @@ The following has already been set up in this VM:
 1. In an existing terminal, run the following two curl commands to add two people:
 
       ```bash
-       curl --request POST 'http://localhost:8080/api/people?firstName=Conrad&lastName=Zuse&age=85'
-       curl --request POST 'http://localhost:8080/api/people?firstName=Alan&lastName=Turing&age=41'
+       <copy>curl --request POST 'http://localhost:8080/api/people?firstName=Conrad&lastName=Zuse&age=85'
+       curl --request POST 'http://localhost:8080/api/people?firstName=Alan&lastName=Turing&age=41'</copy>
       ```   
 
    You will see output showing `1` and `2` which are the automatically generated ID's.
 
-   > Note: Only the `GET /api/people/id` method is cached (unlike the events API). This can be seen in the code [DefaultPersonService#getPerson()](https://github.com/coherence-community/coherence-spring/blob/b285ad6ff3eb80e4d6530f91aae991fb69f6dd65/samples/coherence-spring-demo/coherence-spring-demo-core/src/main/java/com/oracle/coherence/spring/demo/service/impl/DefaultPersonService.java#L51) as shown below.
+      > Note: Only the `GET /api/people/id` method is cached (unlike the events API). This can be seen in the code [DefaultPersonService#getPerson()](https://github.com/coherence-community/coherence-spring/blob/b285ad6ff3eb80e4d6530f91aae991fb69f6dd65/samples/coherence-spring-demo/coherence-spring-demo-core/src/main/java/com/oracle/coherence/spring/demo/service/impl/DefaultPersonService.java#L51) as shown below.
 
       ```java
       @Cacheable(cacheNames="people", key="#personId")
@@ -234,8 +232,8 @@ The following has already been set up in this VM:
 2. Issue the following two curl requests to get both people:
 
       ```bash
-      curl --request GET 'http://localhost:8080/api/people/1'
-      curl --request GET 'http://localhost:8080/api/people/2'
+      <copy>curl --request GET 'http://localhost:8080/api/people/1'
+      curl --request GET 'http://localhost:8080/api/people/2'</copy>
       ```   
    
 3. Check VisualVM and confirm that there are two entries for the people cache.
@@ -245,7 +243,7 @@ The following has already been set up in this VM:
 4. In an existing terminal, run the following curl command to add a third person:
 
       ```bash
-      curl --request POST 'http://localhost:8080/api/people?firstName=James&lastName=Bond&age=66'
+      <copy>curl --request POST 'http://localhost:8080/api/people?firstName=James&lastName=Bond&age=66'</copy>
       ```   
 
    You will see output showing `1` and `2` which are the automatically generated ID's.  
@@ -253,9 +251,9 @@ The following has already been set up in this VM:
 5. To show how caching will improve application performance, issue the following to time and get third person twice:
 
       ```bash
+      <copy>time curl --request GET 'http://localhost:8080/api/people/3'
       time curl --request GET 'http://localhost:8080/api/people/3'
-      time curl --request GET 'http://localhost:8080/api/people/3'
-      time curl --request GET 'http://localhost:8080/api/people/3'
+      time curl --request GET 'http://localhost:8080/api/people/3'</copy>
       ```  
    
    You will see output similar to the following showing the time to get the subsequent entries are lower as they are already cached:
@@ -298,8 +296,7 @@ The following has already been set up in this VM:
       sys    0m0.003s
       ```
 
-   > Note: The time difference is not a great deal as we are using in memory database, but as mentioned before
-   > you can image with the database calls taking much longer, in the 10's of milliseconds, the saving of time and offloading could be significant. 
+      > Note: The time difference is not a great deal as we are using in memory database, but as mentioned before you can image with the database calls taking much longer, in the 10's of milliseconds, the saving of time and offloading could be significant. 
 
 ## Task 5: The code behind the scenes
 

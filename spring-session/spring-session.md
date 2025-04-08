@@ -25,22 +25,22 @@ You should have completed the previous labs.
 1. In the base `pom.xml`, add the following dependency so you can use Coherence Spring Session:
 
       ```xml
-      <dependency>
+      <copy><dependency>
         <groupId>com.oracle.coherence.spring</groupId>
         <artifactId>coherence-spring-session</artifactId>
         <version>${coherence-spring.version}</version>
-      </dependency>
+      </dependency></copy>
       ```
 
 2.  Add the `@EnableCoherenceHttpSession` annotation to the existing annotations in `CoherenceConig.java` to enable the Coherence Spring Session.
 
       ```java
-      @EnableCoherenceHttpSession(
+      <copy>@EnableCoherenceHttpSession(
           cache = "spring:session:sessions",
           flushMode = FlushMode.ON_SAVE,
           sessionTimeoutInSeconds = 1800,
           useEntryProcessor = true
-      )
+      )</copy>
       public class CoherenceConfig {
       ...      
       }
@@ -49,8 +49,8 @@ You should have completed the previous labs.
       Note: You will also have to add the following imports:
  
       ```bash
-      import com.oracle.coherence.spring.session.config.annotation.web.http.EnableCoherenceHttpSession;
-      import org.springframework.session.FlushMode;
+      <copy>import com.oracle.coherence.spring.session.config.annotation.web.http.EnableCoherenceHttpSession;
+      import org.springframework.session.FlushMode;</copy>
       ```
     
       Notes regarding the above:      
@@ -65,7 +65,7 @@ You should have completed the previous labs.
 3.  Enable POF serializer by adding the file `example-pof-config.xml` in `src/main/resources`:
 
       ```xml
-      <?xml version="1.0"?>
+      <copy><?xml version="1.0"?>
       <pof-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://xmlns.oracle.com/coherence/coherence-pof-config"
          xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-pof-config coherence-pof-config.xsd">
@@ -84,7 +84,7 @@ You should have completed the previous labs.
             <class-name>com.oracle.coherence.spring.session.SessionUpdateEntryProcessor</class-name>
           </user-type>
         </user-type-list>
-      </pof-config>
+      </pof-config></copy>
       ```
 
       > Note: The above enables specific POF serialization required by Coherence Spring Session when using POF. Also as we are using entry processors, we must also specify the `SessionUpdateEntryProcessor` class. 
@@ -92,13 +92,13 @@ You should have completed the previous labs.
 4.  Specify to use the above POF config file by adding the following to `src/main/resources/application.properites`: 
 
       ```properties
-      coherence.pof.config=example-pof-config.xml
+      <copy>coherence.pof.config=example-pof-config.xml</copy>
       ```
  
 5.  Add a new class called `SessionController` in the same package as `DemoController.java` with the following contents:
 
       ```java
-      package com.oracle.coherence.demo.frameworks.springboot.controller;
+      <copy>package com.oracle.coherence.demo.frameworks.springboot.controller;
 
       import jakarta.servlet.http.HttpSession;
       import org.apache.logging.log4j.LogManager;
@@ -162,7 +162,7 @@ You should have completed the previous labs.
              logger.info("Session ID: {}; Invalidated", this.session.getId());
              return ResponseEntity.ok(this.session.getId() + " invalidated\n");
          }
-      }
+      }</copy>
       ```
 
       The example above exposes two endpoints where we can issue CURL requests to increment a specific session attribute or remove a session attribute.
@@ -177,19 +177,19 @@ view the session cache in Coherence.  We will use the `-c` option of curl to sav
 1.  In a terminal, issue the following command to build the application:
 
       ```bash
-      mvn clean install -DskipTests
+      <copy>mvn clean install -DskipTests</copy>
       ```
 
 2.  Then run the following command to start the application:
 
       ```bash
-      java -jar target/springboot-1.0-SNAPSHOT.jar
+      <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
       ```
 
 3. In a separate terminal window, run the following command to access the `/api/session` resource with the session attribute `counter1`:
 
       ```bash
-      curl -i -c cookie.txt http://localhost:8080/api/session/counter1
+      <copy>curl -i -c cookie.txt http://localhost:8080/api/session/counter1</copy>
       ```
    
       The output should be similar to the following and the cookie information will be stored to the file `cookie.txt`
@@ -209,7 +209,7 @@ view the session cache in Coherence.  We will use the `-c` option of curl to sav
 4.  In the same terminal, run the following command to issue the CURL commend to use the cookie from the file.
 
       ```bash
-      curl -i -b cookie.txt http://localhost:8080/api/session/counter1
+      <copy>curl -i -b cookie.txt http://localhost:8080/api/session/counter1</copy>
       ```
 
       You will see the output shows the `counter1` attribute with a value of 2 as we have specified to use the same cookie
@@ -224,7 +224,7 @@ view the session cache in Coherence.  We will use the `-c` option of curl to sav
 5.  Execute the command multiple times to keep incrementing the session:
 
       ```bash
-      curl -i -b cookie.txt http://localhost:8080/api/session/counter1
+      <copy>curl -i -b cookie.txt http://localhost:8080/api/session/counter1</copy>
       ```
 
 6.  Access the URL `http://localhost:8080/api/session/counter1` via a web browser.
@@ -249,7 +249,7 @@ In this task we will change the session timeout from 1800 seconds to 30 seconds 
       @EnableCoherenceHttpSession(
           cache = "spring:session:sessions",
           flushMode = FlushMode.ON_SAVE,
-          sessionTimeoutInSeconds = 30,
+          sessionTimeoutInSeconds = <copy>30</copy>,
           useEntryProcessor = true
       )
       public class CoherenceConfig {

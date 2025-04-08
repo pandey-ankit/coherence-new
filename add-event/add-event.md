@@ -22,13 +22,13 @@ In this lab, you will:
 * Add MapListeners on the customers cache to show when data has been modified
 * Add Synchronous EventInterceptors, (Partitioned Cache Events) to modify data as it is being updated          
 
-> Note: there are other events in the Live Events area which we do not cover in this lab, including the following:
-> * Partitioned Cache Lifecycle Events - A set of events that represent the operations for creating a cache, destroying a cache, and clearing all entries from a cache.
-> * Partitioned Service Events - A set of events that represent the operations being performed by a partitioned service. Partitioned service events include both partition transfer events and partition transaction events. Partition transfer events are related to the movement of partitions among cluster members. Partition transaction events are related to changes that may span multiple caches and are performed within the context of a single request.
-> * Lifecycle Events - A set of events that represent the activation and disposal of a ConfigurableCacheFactory instance.
-> * Federation Events -  A set of events that represent the operations being performed by a federation service. Federation events include both federated connection events and federated change events. Federated connection events are related to the interaction of federated participants and federated change events are related to cache updates.
-> 
-> See the `Learn More` section below for documentation links.
+      > Note: there are other events in the Live Events area which we do not cover in this lab, including the following:
+      * **Partitioned Cache Lifecycle Events** - A set of events that represent the operations for creating a cache, destroying a cache, and clearing all entries from a cache.
+      * **Partitioned Service Events** - A set of events that represent the operations being performed by a partitioned service. Partitioned service events include both partition transfer events and partition transaction events. Partition transfer events are related to the movement of partitions among cluster members. Partition transaction events are related to changes that may span multiple caches and are performed within the context of a single request.
+      * **Lifecycle Events** - A set of events that represent the activation and disposal of a ConfigurableCacheFactory instance.
+      * **Federation Events** -  A set of events that represent the operations being performed by a federation service. Federation events include both federated connection events and federated change events. Federated connection events are related to the interaction of federated participants and federated change events are related to cache updates.
+            
+      > See the `Learn More` section below for documentation links.
 
 ### Prerequisites
 
@@ -47,7 +47,7 @@ for updates and the old value for deletes. You can also filter events based upon
 1. Open the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
    
       ```java
-      /**
+      <copy>/**
        * Listener that will be fired upon insertion of a new {@link Customer}.
        * @param event event
        */
@@ -83,41 +83,40 @@ for updates and the old value for deletes. You can also filter events based upon
       @WhereFilter("balance < 1000.0d")
       public void onCustomerUpdatedLowBalance(@Updated @CacheName("customers") MapEvent<Integer, Customer> event) {
           Logger.info(String.format("Low balance for customer, Updated customer key=%d, value=%s", event.getKey(), event.getNewValue()));
-      }
+      }</copy>
       ``` 
 
-      Looking a one of the methods `onCustomerInserted`, this is annotated as `@CoherenceEventListener`, which indicates to 
-      Coherence that this is an event listener. The `@Inserted` annotation indicates this should be run only on insert events and the `@CacheName` specifies the cache that this listener applies to.
+      Looking a one of the methods **`onCustomerInserted`**, this is annotated as **`@CoherenceEventListener`, which indicates to Coherence that this is an event listener. The `@Inserted` annotation indicates this should be run only on insert events and the `@CacheName` specifies the cache that this listener applies to.
 
       Note: You will also have to add the following imports:
    
       ```java
-      import com.oracle.coherence.common.base.Logger;
+      <copy>import com.oracle.coherence.common.base.Logger;
       import com.oracle.coherence.spring.annotation.event.CacheName; 
       import com.oracle.coherence.spring.annotation.event.Deleted; 
       import com.oracle.coherence.spring.annotation.event.Inserted;
       import com.oracle.coherence.spring.annotation.event.Updated;
       import com.oracle.coherence.spring.event.CoherenceEventListener;
       import com.tangosol.util.MapEvent;
-      import com.oracle.coherence.spring.annotation.WhereFilter;
+      import com.oracle.coherence.spring.annotation.WhereFilter;</copy>
       ```
 
 2. In a terminal, issue the following command to build the application:
 
       ```bash
-      mvn clean install -DskipTests
+      <copy>mvn clean install -DskipTests</copy>
       ```
 
 3. Then run the following command to start the application:
 
       ```bash
-      java -jar target/springboot-1.0-SNAPSHOT.jar
+      <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
       ```
              
 4. In a new terminal window, run the following command to insert a customer:
 
       ```bash
-      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
+      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers</copy>
       ```      
    
       You should see output similar to the following showing the event listener firing:
@@ -129,7 +128,7 @@ for updates and the old value for deletes. You can also filter events based upon
 5. Run the following command, (note the changed balance) to update the customer:
 
       ```bash
-      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 5000}' http://localhost:8080/api/customers
+      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 5000}' http://localhost:8080/api/customers</copy>
       ```      
    
       You should see output similar to the following showing the new and old values captured.
@@ -142,7 +141,7 @@ for updates and the old value for deletes. You can also filter events based upon
 6. Run the following to change the balance to $500. This will then cause the low balance listener to trigger based upon the where clause:
 
       ```bash
-      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 500}' http://localhost:8080/api/customers 
+      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 500}' http://localhost:8080/api/customers</copy> 
       ``` 
    
       You should see output showing two event listeners firing, one for the low balance and one for the general update. 
@@ -157,7 +156,7 @@ for updates and the old value for deletes. You can also filter events based upon
 7. Run the following to delete customer 1:
 
       ```bash
-      curl -X DELETE http://localhost:8080/api/customers/1 
+      <copy>curl -X DELETE http://localhost:8080/api/customers/1</copy>
       ``` 
    
       You should see output showing the old value of the deleted customer.
@@ -169,7 +168,7 @@ for updates and the old value for deletes. You can also filter events based upon
 8. Start a second application server, without the http server, using the following command in a new terminal:
 
       ```bash
-      java -Dserver.port=-1 -Dloader.main=com.tangosol.net.Coherence -Dcoherence.management.http=none -jar target/springboot-1.0-SNAPSHOT.jar
+      <copy>java -Dserver.port=-1 -Dloader.main=com.tangosol.net.Coherence -Dcoherence.management.http=none -jar target/springboot-1.0-SNAPSHOT.jar </copy>
       ```   
  
       Once the second server starts up you should see the following message on the first server console. This indicates that the cluster has partitioned 
@@ -182,7 +181,7 @@ for updates and the old value for deletes. You can also filter events based upon
 9. Run the following command, (note the changed balance) to update the customer:
 
       ```bash
-      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 6000}' http://localhost:8080/api/customers
+      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 6000}' http://localhost:8080/api/customers</copy>
       ```      
    
       You should see output similar to the following showing the new customer **on both servers**.
@@ -236,7 +235,7 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
    Open the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
   
       ```java 
-      /**
+      <copy>/**
        * Listener that will be fired on storage-enabled node while an entry is being inserted or updated.
        * The modified value of the {@link Customer} is saved to the cache.
        * @param event event
@@ -250,39 +249,37 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
           customer.setName(customer.getName().toUpperCase());
           // the following ensures the value is updated before it's committed to the backing map
           entry.setValue(customer);
-      }
+      }</copy>
       ```  
     
       Note: You will also have to add the following imports:
 
       ```java
-      import com.oracle.coherence.spring.annotation.event.Inserting;
+      <copy>import com.oracle.coherence.spring.annotation.event.Inserting;
       import com.oracle.coherence.spring.annotation.event.Updating;
       import com.oracle.coherence.spring.annotation.event.Synchronous;
       import com.tangosol.net.events.partition.cache.EntryEvent;
-      import com.tangosol.net.events.partition.cache.EntryEvent;
+      import com.tangosol.net.events.partition.cache.EntryEvent;</copy>
       ```
 
-   > Note: It is important that the amount of work you do within a synchronous event listener is minimized as you are holding
-   > an implicit exclusive lock on the entry while this code runs. You should not be doing any operations that do external calls to
-   > other systems as this will affect the performance and throughput of the cluster.
+   > Note: It is important that the amount of work you do within a synchronous event listener is minimized as you are holding an implicit exclusive lock on the entry while this code runs. You should not be doing any operations that do external calls to other systems as this will affect the performance and throughput of the cluster.
    
 2. In a terminal, issue the following command to build the application:
 
       ```bash
-      mvn clean install -DskipTests
+      <copy>mvn clean install -DskipTests</copy>
       ```
 
 3. Then run the following command to start the application:
 
       ```bash
-      java -jar target/springboot-1.0-SNAPSHOT.jar
+     <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
       ```
              
 4. In a new terminal window, run the following command to insert a customer:
 
       ```bash
-      curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers
+      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers</copy>
       ```      
       
       You should see output from the original listener showing the inserted value with uppercase name:
@@ -294,7 +291,7 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
 5. Confirm the data is stored correctly by issuing the following:
 
       ```bash
-      curl http://localhost:8080/api/customers/1
+      <copy>curl http://localhost:8080/api/customers/1</copy>
       ```   
    
    You should see output similar to the following indicating that the customer has been retrieved and the name is in fact uppercase.
