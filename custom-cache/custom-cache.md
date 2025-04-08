@@ -6,11 +6,11 @@ Coherence Spring uses the Coherence bootstrap API introduced in Coherence CE 20.
 This means that Coherence resources in a Spring application are typically part of a Coherence Session.
 
 By default, Coherence will start a single Session configured to use the default Coherence configuration file. 
-This behavior can easily be configured using traditional Coherence using system properties or using dedicated configuration.
+This behaviour can easily be configured using traditional Coherence using system properties or using dedicated configuration.
 The default cache configuration file is `coherence-cache-config.xml` which is located in `coherence.jar`. 
-This can be sufficient for simple applications, but usually you require a custom cache configuration file.
+This can be sufficient for simple applications, but usually, you require a custom cache configuration file.
 
-In this lab we will define and use a custom Coherence cache configuration file and configure Coherence to use it.
+In this lab, we will define and use a custom Coherence cache configuration file and configure Coherence to use it.
 
 Estimated time: 10 minutes
 
@@ -32,7 +32,7 @@ You should have completed the previous labs.
 
 2. Add the following contents to the new file:
    
-      ```xml
+ ```xml
       <copy><?xml version="1.0"?>
       <cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xmlns="http://xmlns.oracle.com/coherence/coherence-cache-config"
@@ -57,7 +57,7 @@ You should have completed the previous labs.
           </distributed-scheme>
         </caching-schemes>
       </cache-config></copy>
-      ```
+ ```
 
    > Note: This is just a basic cache configuration to demonstrate how you can configure and use a custom config and potentially change it in the future.
 
@@ -65,47 +65,47 @@ You should have completed the previous labs.
 
 1. Create a new file called `CoherenceConfig.java` in the directory `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/` with the following contents:
 
-      ```java
-      <copy>package com.oracle.coherence.demo.frameworks.springboot;
+ ```java
+     <copy>package com.oracle.coherence.demo.frameworks.springboot;
 
       import com.oracle.coherence.spring.configuration.session.SessionConfigurationBean;
       import org.springframework.context.annotation.Bean;
       import org.springframework.context.annotation.Configuration;
 
-      @Configuration
+     @Configuration
       public class CoherenceConfig {
-          @Bean
+     @Bean
           SessionConfigurationBean sessionConfigurationBeanDefault() {
               final SessionConfigurationBean sessionConfigurationBean = new SessionConfigurationBean();
               sessionConfigurationBean.setConfig("example-cache-config.xml");
               return sessionConfigurationBean;
-          }
-      }</copy>
-      ``` 
+     }
+     }</copy>
+ ``` 
    
-      In the above example, we are only setting the cache configuration file via the `setConfig()` method, but there are 
-      a number of other options, shown below, that are available to set. See the [JavaDoc](https://spring.coherence.community/4.3.0/refdocs/api/com/oracle/coherence/spring/configuration/session/SessionConfigurationBean.html).
+ In the above example, we are only setting the cache configuration file via the `setConfig()` method, but there are 
+ a number of other options, shown below, that are available to set. See the [JavaDoc](https://spring.coherence.community/4.3.0/refdocs/api/com/oracle/coherence/spring/configuration/session/SessionConfigurationBean.html).
 
       * `setType()` - specify the type of connection, either `SessionType.SERVER` - Join as Coherence cluster member (the default), or `SessionType.CLIENT` - connect to Coherence as a Coherence*Extend or gRPC client
       * `setScope()` - allows setting of the scope for service to separate caches and services based upon this scope
 
 2. In a terminal, issue the following command to re-build the application:
 
-      ```bash
-      <copy>mvn clean install -DskipTests</copy>
-      ```
+ ```bash
+     <copy>mvn clean install -DskipTests</copy>
+ ```
 
 3. Then run the following command to start the application:
 
-      ```bash
-      <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
-      ```   
+ ```bash
+     <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
+ ```   
    
-      You should see output similar to the following indicating our new cache config has been loaded:
+ You should see output similar to the following indicating our new cache config has been loaded:
 
-      ```bash
-      Loaded cache configuration from "jar:nested: ... github/spring-workshop/target/springboot-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/example-cache-config.xml"
-      ```
+ ```bash
+     Loaded cache configuration from "jar:nested: ... github/spring-workshop/target/springboot-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/example-cache-config.xml"
+ ```
 
 ## Learn More
    
