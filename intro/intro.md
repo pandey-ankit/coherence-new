@@ -16,7 +16,7 @@ of being obtained explicitly via Coherence APIs.
 
 Furthermore, using annotated event listener methods simplifies building reactive code that responds to Coherence cache events.
 
-Estimated time: 60 minutes
+Estimated time: 90 minutes
 
 ### Objectives
 
@@ -50,4 +50,4 @@ low-latency data storage, polyglot grid computing, and asynchronous event stream
 
 * **Author** - Tim Middleton
 * **Contributors** - Ankit Pandey, Sid Joshi
-* **Last Updated By/Date** - Ankit Pandey, January 2025
+* **Last Updated By/Date** - Ankit Pandey, April 2025

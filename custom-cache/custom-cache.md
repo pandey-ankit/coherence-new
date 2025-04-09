@@ -32,7 +32,7 @@ You should have completed the previous labs.
 
 2. Add the following contents to the new file:
    
- ```xml
+    ```xml
       <copy><?xml version="1.0"?>
       <cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xmlns="http://xmlns.oracle.com/coherence/coherence-cache-config"
@@ -57,15 +57,15 @@ You should have completed the previous labs.
           </distributed-scheme>
         </caching-schemes>
       </cache-config></copy>
- ```
+    ```
 
-   > Note: This is just a basic cache configuration to demonstrate how you can configure and use a custom config and potentially change it in the future.
+    > Note: This is just a basic cache configuration to demonstrate how you can configure and use a custom config and potentially change it in the future.
 
 ## Task 2: Use the new cache configuration
 
 1. Create a new file called `CoherenceConfig.java` in the directory `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/` with the following contents:
 
- ```java
+    ```java
      <copy>package com.oracle.coherence.demo.frameworks.springboot;
 
       import com.oracle.coherence.spring.configuration.session.SessionConfigurationBean;
@@ -81,31 +81,30 @@ You should have completed the previous labs.
               return sessionConfigurationBean;
      }
      }</copy>
- ``` 
+    ``` 
    
- In the above example, we are only setting the cache configuration file via the `setConfig()` method, but there are 
- a number of other options, shown below, that are available to set. See the [JavaDoc](https://spring.coherence.community/4.3.0/refdocs/api/com/oracle/coherence/spring/configuration/session/SessionConfigurationBean.html).
+    In the above example, we are only setting the cache configuration file via the `setConfig()` method, but there are a number of other options, shown below, that are available to set. See the [JavaDoc](https://spring.coherence.community/4.3.0/refdocs/api/com/oracle/coherence/spring/configuration/session/SessionConfigurationBean.html).
 
       * `setType()` - specify the type of connection, either `SessionType.SERVER` - Join as Coherence cluster member (the default), or `SessionType.CLIENT` - connect to Coherence as a Coherence*Extend or gRPC client
       * `setScope()` - allows setting of the scope for service to separate caches and services based upon this scope
 
 2. In a terminal, issue the following command to re-build the application:
 
- ```bash
+    ```bash
      <copy>mvn clean install -DskipTests</copy>
- ```
+    ```
 
 3. Then run the following command to start the application:
 
- ```bash
+    ```bash
      <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
- ```   
+    ```   
    
- You should see output similar to the following indicating our new cache config has been loaded:
+    You should see output similar to the following indicating our new cache config has been loaded:
 
- ```bash
+    ```bash
      Loaded cache configuration from "jar:nested: ... github/spring-workshop/target/springboot-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/example-cache-config.xml"
- ```
+    ```
 
 ## Learn More
    

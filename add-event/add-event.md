@@ -46,7 +46,7 @@ for updates and the old value for deletes. You can also filter events based on a
 
 1. Open the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
    
- ```java
+    ```java
      <copy>/**
      * Listener that will be fired upon insertion of a new {@link Customer}.
      * @param event event
@@ -84,13 +84,13 @@ for updates and the old value for deletes. You can also filter events based on a
       public void onCustomerUpdatedLowBalance(@Updated @CacheName("customers") MapEvent<Integer, Customer> event) {
           Logger.info(String.format("Low balance for customer, Updated customer key=%d, value=%s", event.getKey(), event.getNewValue()));
      }</copy>
- ``` 
+    ``` 
 
- Looking a one of the methods **`onCustomerInserted`**, this is annotated as **`@CoherenceEventListener`, which indicates to Coherence that this is an event listener. The `@Inserted` annotation indicates this should be run only on insert events and the `@CacheName` specifies the cache that this listener applies to.
+    Looking a one of the methods **`onCustomerInserted`**, this is annotated as **`@CoherenceEventListener`, which indicates to Coherence that this is an event listener. The `@Inserted` annotation indicates this should be run only on insert events and the `@CacheName` specifies the cache that this listener applies to.
 
- Note: You will also have to add the following imports:
+    Note: You will also have to add the following imports:
    
- ```java
+    ```java
      <copy>import com.oracle.coherence.common.base.Logger;
       import com.oracle.coherence.spring.annotation.event.CacheName; 
       import com.oracle.coherence.spring.annotation.event.Deleted; 
@@ -99,99 +99,97 @@ for updates and the old value for deletes. You can also filter events based on a
       import com.oracle.coherence.spring.event.CoherenceEventListener;
       import com.tangosol.util.MapEvent;
       import com.oracle.coherence.spring.annotation.WhereFilter;</copy>
- ```
+    ```
 
 2. In a terminal, issue the following command to build the application:
 
- ```bash
+    ```bash
      <copy>mvn clean install -DskipTests</copy>
- ```
+    ```
 
 3. Then run the following command to start the application:
 
- ```bash
+    ```bash
      <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
- ```
+    ```
              
 4. In a new terminal window, run the following command to insert a customer:
 
- ```bash
+    ```bash
      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers</copy>
- ```      
+    ```      
    
- You should see output similar to the following showing the event listener firing:
+    You should see output similar to the following showing the event listener firing:
 
- ```bash
+    ```bash
      ... Inserted customer key=1, value=Customer{id=1, name='Tim', balance=1000.0}   
- ```
+    ```
 
 5. Run the following command, (note the changed balance) to update the customer:
 
- ```bash
+    ```bash
      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 5000}' http://localhost:8080/api/customers</copy>
- ```      
+    ```      
    
- You should see output similar to the following showing the new and old values captured.
+    You should see output similar to the following showing the new and old values captured.
 
- ```bash
+    ```bash
      ... Updated customer key=1, old value=Customer{id=1, name='Tim', balance=1000.0}, 
      new value=Customer{id=1, name='Tim', balance=5000.0}
- ```
+    ```
     
 6. Run the following to change the balance to $500. This will then cause the low-balance listener to trigger based on the where clause:
 
- ```bash
+    ```bash
      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 500}' http://localhost:8080/api/customers</copy> 
- ``` 
+    ``` 
    
- You should see output showing two event listeners firing, one for the low balance and one for the general update. 
+    You should see output showing two event listeners firing, one for the low balance and one for the general update. 
 
- ```bash
+    ```bash
      Low balance for customer, Updated customer key=1, value=Customer{id=1, name='Tim', balance=500.0}
      Updated customer key=1, old value=Customer{id=1, name='Tim', balance=5000.0}, new value=Customer{id=1, name='Tim', balance=500.0}
- ```   
+    ```   
    
-      > Note: When using where clauses, you should consider adding indexes on fields in the where clause for more efficient access. See the [Documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/querying-data-cache.html#GUID-75243AC5-8FF4-4485-8754-25FE8B3A8101) for more information.
+    > Note: When using where clauses, you should consider adding indexes on fields in the where clause for more efficient access. See the [Documentation](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.2/develop-applications/querying-data-cache.html#GUID-75243AC5-8FF4-4485-8754-25FE8B3A8101) for more information.
     
 7. Run the following to delete customer 1:
 
- ```bash
+    ```bash
      <copy>curl -X DELETE http://localhost:8080/api/customers/1</copy>
- ``` 
+    ``` 
    
- You should see an output showing the old value of the deleted customer.
+    You should see an output showing the old value of the deleted customer.
 
- ```bash
+    ```bash
      Deleted customer key=1, old value=Customer{id=1, name='Tim', balance=500.0}
- ```
+    ```
 
 8. Start a second application server, without the HTTP server, using the following command in a new terminal:
 
- ```bash
+    ```bash
      <copy>java -Dserver.port=-1 -Dloader.main=com.tangosol.net.Coherence -Dcoherence.management.http=none -jar target/springboot-1.0-SNAPSHOT.jar </copy>
- ```   
+    ```   
  
- Once the second server starts up you should see the following message on the first server console. This indicates that the cluster has partitioned 
- the data between the two members for high availability.
+    Once the second server starts up you should see the following message on the first server console. This indicates that the cluster has partitioned the data between the two members for high availability.
 
- ```bash
+    ```bash
      Partition ownership has stabilized with 2 nodes
- ```
+    ```
 
 9. Run the following command, (note the changed balance) to update the customer:
 
- ```bash
+    ```bash
      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 6000}' http://localhost:8080/api/customers</copy>
- ```      
+    ```      
    
- You should see output similar to the following showing the new customer **on both servers**.
+    You should see output similar to the following showing the new customer **on both servers**.
 
- ```bash
+    ```bash
      ... Inserted customer key=1, value=Customer{id=1, name='Tim', balance=6000.0}
- ```        
+    ```        
 
- Note: The reason for both members receiving the events is that each of the servers has registered for it. This is fine for responding to events,
- but in the next lab we cover how we can write interceptors to work with or modify data before, during or after it has been added to the cluster. 
+    Note: The reason for both members receiving the events is that each of the servers has registered for it. This is fine for responding to events,but in the next lab we cover how we can write interceptors to work with or modify data before, during or after it has been added to the cluster. 
     
 ## Task 2: Adding EventInterceptor to mutate data
     
@@ -234,7 +232,7 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
 
  Open the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
   
- ```java 
+    ```java 
      <copy>/**
      * Listener that will be fired on a storage-enabled node while an entry is being inserted or updated.
      * The modified value of the {@link Customer} is saved to the cache.
@@ -250,55 +248,55 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
           //The following ensures the value is updated before it's committed to the backing map
           entry.setValue(customer);
      }</copy>
- ```  
+    ```  
     
- Note: You will also have to add the following imports:
+    Note: You will also have to add the following imports:
 
- ```java
+    ```java
      <copy>import com.oracle.coherence.spring.annotation.event.Inserting;
       import com.oracle.coherence.spring.annotation.event.Updating;
       import com.oracle.coherence.spring.annotation.event.Synchronous;
       import com.tangosol.net.events.partition.cache.EntryEvent;
       import com.tangosol.net.events.partition.cache.EntryEvent;</copy>
- ```
+    ```
 
-   > Note: It is important that the amount of work you do within a synchronous event listener is minimized as you are holding an implicit exclusive lock on the entry while this code runs. You should not be doing any operations that do external calls to other systems as this will affect the performance and throughput of the cluster.
+    > Note: It is important that the amount of work you do within a synchronous event listener is minimized as you are holding an implicit exclusive lock on the entry while this code runs. You should not be doing any operations that do external calls to other systems as this will affect the performance and throughput of the cluster.
    
 2. In a terminal, issue the following command to build the application:
 
- ```bash
+    ```bash
      <copy>mvn clean install -DskipTests</copy>
- ```
+    ```
 
 3. Then run the following command to start the application:
 
- ```bash
+    ```bash
      <copy>java -jar target/springboot-1.0-SNAPSHOT.jar</copy>
- ```
+    ```
              
 4. In a new terminal window, run the following command to insert a customer:
 
- ```bash
+    ```bash
      <copy>curl -X POST -H "Content-Type: application/json" -d '{"id": 1, "name": "Tim", "balance": 1000}' http://localhost:8080/api/customers</copy>
- ```      
+    ```      
       
- You should see output from the original listener showing the inserted value with the uppercase name:
+    You should see output from the original listener showing the inserted value with the uppercase name:
 
- ```bash
+    ```bash
      Inserted customer key=1, value=Customer{id=1, name='TIM', balance=1000.0}
- ```   
+    ```   
       
 5. Confirm the data is stored correctly by issuing the following:
 
- ```bash
+    ```bash
      <copy>curl http://localhost:8080/api/customers/1</copy>
- ```   
+    ```   
    
- You should see an output similar to the following indicating that the customer has been retrieved and the name is in fact uppercase.
+    You should see an output similar to the following indicating that the customer has been retrieved and the name is in fact uppercase.
 
- ```json 
+    ```json 
      {"id":1,"name":"TIM","balance":1000.0}
- ```  
+    ```  
 
 ## Learn More
   
