@@ -65,8 +65,8 @@ As Coherence is, at its core, a key-value store, mapping Entities for use with a
 2. Add the following to the existing **`CoherenceConig.java`** to enable the repository.
 
     ```java
-     <copy>@Configuration
-     @EnableCoherence
+     @Configuration
+     <copy>@EnableCoherence
      @EnableCoherenceRepositories</copy>
       public class CoherenceConfig {
     ```

@@ -36,15 +36,15 @@ You should have completed the previous labs.
 
 ## Task 1: Adding MapListeners
 
-In this task, we will add Coherence event listeners to respond to cache `MapEvents`.  
-A `MapEvent` observer method is a method on a Spring bean that is annotated with `@CoherenceEventListener`. 
-The annotated method must have a void return type and must take a single method parameter of type `MapEvent`, 
+In this task, we will add Coherence event listeners to respond to cache **`MapEvents`**.  
+A `MapEvent` observer method is a method on a Spring bean that is annotated with **`@CoherenceEventListener`**. 
+The annotated method must have a void return type and must take a single method parameter of type **`MapEvent`**, 
 typically this has the generic types of the underlying map/cache key and value.
 
 These observe methods, can respond to insert, update or delete events and contain the new value for insert, the old and new value
 for updates and the old value for deletes. You can also filter events based on a where clause.
 
-1. Open the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
+1. Open the file **`./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java`** in VisualStudio code and add the following to the end of the file.
    
     ```java
      <copy>/**
@@ -86,7 +86,7 @@ for updates and the old value for deletes. You can also filter events based on a
      }</copy>
     ``` 
 
-    Looking a one of the methods **`onCustomerInserted`**, this is annotated as **`@CoherenceEventListener`, which indicates to Coherence that this is an event listener. The `@Inserted` annotation indicates this should be run only on insert events and the `@CacheName` specifies the cache that this listener applies to.
+    Looking a one of the methods **`onCustomerInserted`**, this is annotated as **`@CoherenceEventListener**`**, which indicates to Coherence that this is an event listener. The **`@Inserted`** annotation indicates this should be run only on insert events and the **`@CacheName`** specifies the cache that this listener applies to.
 
     Note: You will also have to add the following imports:
    
@@ -230,7 +230,7 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
 
 1. Add an event listener that will ensure that a customer's name is always uppercase.
 
- Open the file `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` in VisualStudio code and add the following to the end of the file.
+ Open the file **`./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java`** in VisualStudio code and add the following to the end of the file.
   
     ```java 
      <copy>/**
@@ -257,7 +257,7 @@ public void onEvent(@Inserted @Removed EntryEvent event) {
       import com.oracle.coherence.spring.annotation.event.Updating;
       import com.oracle.coherence.spring.annotation.event.Synchronous;
       import com.tangosol.net.events.partition.cache.EntryEvent;
-      import com.tangosol.net.events.partition.cache.EntryEvent;</copy>
+      import com.tangosol.util.BinaryEvent;</copy>
     ```
 
     > Note: It is important that the amount of work you do within a synchronous event listener is minimized as you are holding an implicit exclusive lock on the entry while this code runs. You should not be doing any operations that do external calls to other systems as this will affect the performance and throughput of the cluster.

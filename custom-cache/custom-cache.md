@@ -28,7 +28,7 @@ You should have completed the previous labs.
 
 ## Task 1: Create a cache configuration file
 
-1. In Visual Studio code, create a new file in the directory `src/main/resources/` called `example-cache-config.xml`
+1. In Visual Studio code, create a new file in the directory **`src/main/resources/`** called **`example-cache-config.xml`**.
 
 2. Add the following contents to the new file:
    
@@ -63,7 +63,7 @@ You should have completed the previous labs.
 
 ## Task 2: Use the new cache configuration
 
-1. Create a new file called `CoherenceConfig.java` in the directory `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/` with the following contents:
+1. Create a new file called **`CoherenceConfig.java`** in the directory **`./src/main/java/com/oracle/coherence/demo/frameworks/springboot/`** with the following contents:
 
     ```java
      <copy>package com.oracle.coherence.demo.frameworks.springboot;

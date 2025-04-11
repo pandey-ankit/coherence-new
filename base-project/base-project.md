@@ -16,11 +16,7 @@ In this lab, you will:
 
 ### Prerequisites
 
-You should have completed the previous labs.
-
-The following has already been set up in this VM:
-
-1. The `spring-workshop` repository has been cloned from .... into `~/spring-workshop`. We will build upon this workshop in this lab.
+* You should have completed the previous labs.
 
     > Note: Make sure you have stopped all Java processes from the previous lab.
 
@@ -29,11 +25,11 @@ The following has already been set up in this VM:
 1. Open a new terminal and change to the `spring-workshop` directory and verify the environment.
 
     ```bash
-    <copy>cd ~/spring-workshop
+    <copy>cd ~/spring-workshop-01-base/
     mvn -v</copy>
     ```   
    
- You will have output similar to the following:
+    You will have output similar to the following:
 
     ```bash
     Apache Maven 3.8.8 (4c87b05d9aedce574290d1acc98575ed5eb6cd39)
@@ -47,14 +43,6 @@ The following has already been set up in this VM:
     ```bash
     <copy>mvn clean install -DskipTests</copy>
     ```
-   
-    You should see output similar to the following indicating that the sample has been built:
-
-    ```bash
-    [INFO] ------------------------------------------------------------------------
-    [INFO] BUILD SUCCESS
-    [INFO] ------------------------------------------------------------------------
-    ``` 
 
 3. In the same terminal, run the following command to start the application:
 
@@ -85,7 +73,7 @@ The following has already been set up in this VM:
     You should see an output similar to the following indicating that the customer has been retrieved:
 
     ```json 
-    {"id":1,"name":"Tim","balance":1234.0}
+    {"id":1,"name":"Tim","balance":1000.0}
     ```  
      
 6. Run the following command to delete a customer.
@@ -97,30 +85,43 @@ The following has already been set up in this VM:
     You should see an output similar to the following showing the deleted customer.
 
     ```json 
-    {"id":1,"name":"Tim","balance":1234.0}
+    {"id":1,"name":"Tim","balance":1000.0}
     ```  
    
     > Note: You can verify the customer's cache by using VisualVM as we did in the previous lab. Ensure that you close the tab you opened with the previous process and double-click on the new (`springboot-1.0-SNAPSHOT.jar`) process.
+      ![visualvm start](images/visualvm-start.png)
    
 7. Use `CTRL-C` to quit the Spring Boot application before you move to the next task.
+
     > Note: In this simple example we are running the application as a single storage-enabled member meaning that the application is serving JAX-RS endpoints as well as storing data. This is fine for a demo application, but typical applications usually have a separate tier of storage-enabled clients, and the application is storage-disabled and allows for scaling of both the client and coherence cluster tiers.
 
 ## Task 2: Understand the simple application dependencies
 
- In this task, we will cover the dependencies required for the simple application. You can refer to the file `~/spring-workshop/pom.xml` for the full contents.
+ In this task, we will cover the dependencies required for the simple application. You can refer to the file `~/spring-workshop-01-base/pom.xml` for the full contents.
 
-1. In the `pom.xml` we define the parent pom to be `spring-boot-starter-parent`, as this will bring in the required spring boot dependencies.
+1. Click **Activites** and Click icon for **Visual Studio Code**.
+    ![click vscode](images/click-vscode.png)
+
+2. In **VS Code**, click **File** -> **Open Folder**.
+
+3. Select **spring-workshop-01-base** and click **Open**.
+    ![open app](images/open-app.png)
+
+4. Click **Yes, I trust the authors**, to open the folder.
+
+
+5. In the **`pom.xml`** we define the parent pom to be **`spring-boot-starter-parent`**, as this will bring in the required spring boot dependencies.
 
       ```xml
       <parent>
        <groupId>org.springframework.boot</groupId>
        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.2</version>
+        <version>3.4.3</version>
        <relativePath/>
       </parent>
       ```
     
-2. We then define the name of this project and the `properties` for other dependencies:
+2. We then define the name of this project and the **`properties`** for other dependencies:
 
       ```xml
       <groupId>com.oracle.coherence.demo.workshops</groupId>
@@ -137,7 +138,7 @@ The following has already been set up in this VM:
       </properties>
      ```
  
-3. The `spring-boot-starter-web` artifact is included to provide the basic REST and Tomcat app server.
+3. The **`spring-boot-starter-web`** artifact is included to provide the basic REST and Tomcat app server.
 
     ```xml
       <dependency>
@@ -166,9 +167,9 @@ The following has already been set up in this VM:
       </dependency>
     ``` 
       
-    > Note: `coherence-spring-boot-starter` is required for autoconfiguration and Coherence spring boot support, `coherence` is the core component and `coherence-json` is not technically required, but is needed to enable management API over REST.   
+    > Note: **`coherence-spring-boot-starter`** is required for autoconfiguration and Coherence spring boot support, **`coherence`** is the core component and **`coherence-json`** is not technically required, but is needed to enable management API over REST.   
 
-5. Finally, we include the plugin dependencies for `spring-boot-maven-plugin` and the `pof-maven-plugin` that automatically instruments the POJO's with Coherence POF serialization. 
+5. Finally, we include the plugin dependencies for **`spring-boot-maven-plugin`** and the **`pof-maven-plugin`** that automatically instruments the POJO's with Coherence POF serialization. 
 
     ```xml
       <build>
@@ -205,7 +206,7 @@ The following has already been set up in this VM:
 
 In this task, we will cover the application configuration and code.
 
-1. The file `src/main/resources/application.properties` contains any system properties we want the application to use:
+1. The file **`src/main/resources/application.properties`** contains any system properties we want the application to use:
 
     ```properties 
     # Common Coherence system properties
@@ -223,7 +224,7 @@ In this task, we will cover the application configuration and code.
   **`coherence.wka=127.0.0.1`** restricts the Coherence cluster traffic to the localhost only. The loopback address is just used for demonstration purposes and would not be used in production.</br>
   **`coherence.management.http=all`** This is not mandatory, but if set to `all`, enables Coherence management over REST api.</br>
 
-2. The Customer class (`./src/main/java/com/oracle/coherence/demo/frameworks/springboot/Customer.java`) is used to store customer information in the cache. The getter/setter and object methods have been left out for brevity.
+2. The Customer class **(`./src/main/java/com/oracle/coherence/demo/frameworks/springboot/Customer.java`)** is used to store customer information in the cache. The getter/setter and object methods have been left out for brevity.
 
     ```java 
      @PortableType(id = 1000)
@@ -245,7 +246,7 @@ In this task, we will cover the application configuration and code.
 
 3. Demonstration application and Controller
 
-    The `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/DemoApplication.java` is a standard Spring Boot application entry point.
+    The **`./src/main/java/com/oracle/coherence/demo/frameworks/springboot/DemoApplication.java`** is a standard Spring Boot application entry point.
 
     ```java
      @SpringBootApplication
@@ -256,7 +257,7 @@ In this task, we will cover the application configuration and code.
     } 
     ```  
       
-   The `./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java` class is a JAX-RS application using Coherence.
+   The **`./src/main/java/com/oracle/coherence/demo/frameworks/springboot/controller/DemoController.java`** class is a JAX-RS application using Coherence.
 
     ```java
       @RestController
@@ -290,7 +291,7 @@ In this task, we will cover the application configuration and code.
     }
     ```
 
-    > Note: The `@CoherenceCache` annotation injects and `NamedCache` with key of `Integer` and value of `Customer`. When using basic cache operations they are the same as `Map` operations. For example `values()`, `put()` and `remove()`.
+    > Note: The **`@CoherenceCache`** annotation injects and **`NamedCache**`** with key of **`Integer`** and value of **`Customer`**. When using basic cache operations they are the same as **`Map`** operations. For example **`values()`**, **`put()`** and **`remove()`**.
 
 ## Learn More
             
